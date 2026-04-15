@@ -22,6 +22,8 @@ services:
       SUPERADMIN_EMAIL: ${SUPERADMIN_EMAIL:-superadmin@deeplearnx.com}
       SUPERADMIN_PASSWORD: ${SUPERADMIN_PASSWORD:-change_me_in_production}
       SUPERADMIN_FULLNAME: ${SUPERADMIN_FULLNAME:-Super Admin}
+    ports:
+      - "127.0.0.1:9000:9000"
     networks:
       - deeplearnx-net
 
