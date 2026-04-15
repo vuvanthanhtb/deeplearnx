@@ -1,0 +1,20 @@
+.form-input {
+  width: 150px;
+  height: 35px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+
+  &:focus {
+    border-color: #2684ff;
+    outline: none;
+  }
+
+  &--error {
+    border-color: red;
+  }
+}
+
+.form-control {
+  height: 40px;
+}

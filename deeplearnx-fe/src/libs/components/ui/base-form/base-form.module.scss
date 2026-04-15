@@ -1,0 +1,28 @@
+.form-container {
+  padding: 10px;
+  background: #fff;
+  border-radius: 5px;
+
+  .form-required {
+    color: #d70e0e;
+    margin-left: 5px;
+  }
+
+  .form-btn-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-top: 27px;
+  }
+
+  .array-field {
+    position: relative;
+
+    &__remove-btn {
+      position: absolute;
+      top: 60%;
+      right: -20px;
+      transform: translateY(-50%);
+    }
+  }
+}

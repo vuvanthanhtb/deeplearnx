@@ -1,0 +1,45 @@
+services:
+  backend:
+    build:
+      context: ./deeplearnx-be
+      dockerfile: Dockerfile
+    container_name: deeplearnx-backend
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: ${DB_PORT:-5432}
+      DB_NAME: ${DB_NAME:-deeplearnx_db}
+      DB_USERNAME: ${DB_USERNAME:-devuser}
+      DB_PASSWORD: ${DB_PASSWORD:-change_me_in_production}
+      SPRING_JPA_DDL_AUTO: ${SPRING_JPA_DDL_AUTO:-update}
+      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-604800000}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost}
+      SUPERADMIN_USERNAME: ${SUPERADMIN_USERNAME:-admin}
+      SUPERADMIN_EMAIL: ${SUPERADMIN_EMAIL:-superadmin@deeplearnx.com}
+      SUPERADMIN_PASSWORD: ${SUPERADMIN_PASSWORD:-change_me_in_production}
+      SUPERADMIN_FULLNAME: ${SUPERADMIN_FULLNAME:-Super Admin}
+    networks:
+      - deeplearnx-net
+
+  frontend:
+    build:
+      context: ./deeplearnx-fe
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ""
+    container_name: deeplearnx-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - deeplearnx-net
+
+networks:
+  deeplearnx-net:
+    driver: bridge

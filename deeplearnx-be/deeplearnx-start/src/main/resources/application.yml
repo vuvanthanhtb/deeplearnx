@@ -1,0 +1,46 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: deeplearnx
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:159.65.143.56}:${DB_PORT:5432}/${DB_NAME:deeplearnx_db}
+    username: ${DB_USERNAME:devuser}
+    password: ${DB_PASSWORD:ZGV2dXNlciBhY2NvdW50Cg==}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_DDL_AUTO:create-drop}
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: public
+
+springdoc:
+  swagger-ui:
+    path: /
+
+jwt:
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+  expiration: ${JWT_EXPIRATION:86400000}
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200,http://127.0.0.1:4200}
+
+superadmin:
+  username: ${SUPERADMIN_USERNAME:admin}
+  email: ${SUPERADMIN_EMAIL:superadmin@deeplearnx.com}
+  password: ${SUPERADMIN_PASSWORD:123456789}
+  fullName: ${SUPERADMIN_FULLNAME:Vũ Văn Thanh}
+
+export:
+  template:
+    dir: ./templates
+    course: ./templates/course_export_template.xlsx
+    user: ./templates/user_export_template.xlsx
+    user-import: ./templates/user_import_template.xlsx
+  start-row: 4

@@ -1,0 +1,32 @@
+.table-btn-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.total-records {
+  margin-bottom: 10px;
+  font-weight: 500;
+
+  span {
+    font-weight: 600;
+    color: #26c55b;
+  }
+}
+
+.table-container {
+  thead tr th {
+    text-align: center;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .row-selected {
+    background-color: #e8f0fe !important;
+  }
+}

@@ -1,0 +1,97 @@
+package com.deeplearnx.application.service.impl;
+
+import com.deeplearnx.application.dto.request.CreateCourseRequest;
+import com.deeplearnx.application.dto.request.UpdateCourseRequest;
+import com.deeplearnx.application.dto.response.CourseResponse;
+import com.deeplearnx.application.mapper.CourseMapper;
+import com.deeplearnx.application.service.CourseService;
+import com.deeplearnx.core.exception.NotFoundException;
+import com.deeplearnx.core.response.PageResponse;
+import com.deeplearnx.core.utils.SlugUtils;
+import com.deeplearnx.domain.entity.Course;
+import com.deeplearnx.domain.entity.User;
+import com.deeplearnx.infrastructure.persistence.CourseRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class CourseServiceImpl implements CourseService {
+
+  private final CourseRepository courseRepository;
+  private final CourseMapper courseMapper;
+
+  @Override
+  public PageResponse<CourseResponse> findAll(String name, int page, int size) {
+    var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+    Page<Course> result = StringUtils.hasText(name)
+        ? courseRepository.searchByName(name, pageable)
+        : courseRepository.findAll(pageable);
+    return PageResponse.of(result, courseMapper::toResponse);
+  }
+
+  @Override
+  public CourseResponse findById(Long id) {
+    return courseMapper.toResponse(getCourse(id));
+  }
+
+  @Override
+  public CourseResponse findBySlug(String slug) {
+    return courseMapper.toResponse(courseRepository.findBySlug(slug)
+        .orElseThrow(() -> new NotFoundException("Course not found")));
+  }
+
+  @Override
+  public CourseResponse create(CreateCourseRequest request, User currentUser) {
+    log.info("Create course name={} by user={}", request.name(), currentUser.getUsername());
+    String slug = generateUniqueSlug(request.name(), null);
+    Course course = new Course();
+    course.setName(request.name());
+    course.setSlug(slug);
+    course.setDescription(request.description());
+    course.setUser(currentUser);
+    return courseMapper.toResponse(courseRepository.save(course));
+  }
+
+  @Override
+  public CourseResponse update(Long id, UpdateCourseRequest request) {
+    log.info("Update course id={}", id);
+    Course course = getCourse(id);
+    if (StringUtils.hasText(request.name()) && !request.name().equals(course.getName())) {
+      course.setName(request.name());
+      course.setSlug(generateUniqueSlug(request.name(), course.getId()));
+    }
+    if (request.description() != null) {
+      course.setDescription(request.description());
+    }
+    return courseMapper.toResponse(courseRepository.save(course));
+  }
+
+  @Override
+  public void delete(Long id) {
+    log.info("Delete course id={}", id);
+    getCourse(id);
+    courseRepository.deleteById(id);
+  }
+
+  private Course getCourse(Long id) {
+    return courseRepository.findById(id)
+        .orElseThrow(() -> new NotFoundException("Course not found"));
+  }
+
+  private String generateUniqueSlug(String name, Long excludeId) {
+    String base = SlugUtils.toSlug(name);
+    String slug = base;
+    int counter = 1;
+    while (courseRepository.existsBySlugAndIdNot(slug, excludeId != null ? excludeId : 0L)) {
+      slug = base + "-" + counter++;
+    }
+    return slug;
+  }
+}

@@ -1,0 +1,27 @@
+.login-container {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+
+  img {
+    width: calc(100vw - 30%);
+    height: 100vh;
+    object-fit: cover;
+  }
+
+  .form-login {
+    width: 30%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-inline: 30px;
+
+    &__title {
+      font-size: 30px;
+      font-weight: 600;
+      margin-bottom: 50px;
+    }
+  }
+}

@@ -1,0 +1,46 @@
+# ============================================================
+# Sensitive files
+# ============================================================
+.env
+
+# ============================================================
+# Backend (Java / Maven)
+# ============================================================
+deeplearnx-be/target/
+deeplearnx-be/**/target/
+deeplearnx-be/*.xlsx
+deeplearnx-be/templates/
+deeplearnx-be/.mvn/wrapper/maven-wrapper.jar
+deeplearnx-be/logs/
+
+# IDE
+deeplearnx-be/.idea/
+deeplearnx-be/**/*.iws
+deeplearnx-be/**/*.iml
+deeplearnx-be/**/*.ipr
+deeplearnx-be/.vscode/
+deeplearnx-be/.classpath
+deeplearnx-be/.project
+deeplearnx-be/.settings/
+deeplearnx-be/.factorypath
+
+# ============================================================
+# Frontend (Node / Vite)
+# ============================================================
+deeplearnx-fe/node_modules/
+deeplearnx-fe/dist/
+deeplearnx-fe/dist-ssr/
+deeplearnx-fe/*.local
+deeplearnx-fe/logs/
+deeplearnx-fe/*.log
+
+# IDE
+deeplearnx-fe/.idea/
+deeplearnx-fe/.vscode/
+deeplearnx-fe/.DS_Store
+
+# ============================================================
+# OS
+# ============================================================
+.DS_Store
+Thumbs.db

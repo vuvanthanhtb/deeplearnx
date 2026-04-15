@@ -1,0 +1,43 @@
+.login-container {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+
+  img {
+    width: calc(100vw - 30%);
+    height: 100vh;
+    object-fit: cover;
+  }
+
+  .form-login {
+    width: 30%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-inline: 30px;
+
+    &__title {
+      font-size: 30px;
+      font-weight: 600;
+      margin-bottom: 50px;
+    }
+
+    &__switch {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #6a6f73;
+
+      a {
+        color: #1a73e8;
+        text-decoration: none;
+        font-weight: 500;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

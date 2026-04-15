@@ -1,0 +1,59 @@
+@use "./abstracts/variables.scss";
+@use "./base/btn.scss";
+@use "./base/form.scss";
+@use "./base/size.scss";
+
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/helpers";
+@import "bootstrap/scss/utilities/api";
+
+// @import "@fontsource/be-vietnam-pro/400.css";
+// @import "@fontsource/be-vietnam-pro/500.css";
+// @import "@fontsource/be-vietnam-pro/700.css";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  // font-family: fantasy;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.rbc-row.rbc-time-header-cell {
+  .rbc-header {
+    height: 50px;
+  }
+}
+
+.active-sidebar {
+  background: #bb2019 !important;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.offcanvas.offcanvas-end.show {
+  width: 70vw;
+}
+
+.base-background {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.base-title {
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
