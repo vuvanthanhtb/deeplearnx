@@ -23,7 +23,6 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
 COPY --from=builder /app/deeplearnx-start/target/*.jar app.jar
-COPY --from=builder /app/templates ./templates
 
 EXPOSE 9000
 
