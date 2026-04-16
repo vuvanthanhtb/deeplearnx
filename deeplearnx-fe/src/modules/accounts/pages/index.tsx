@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PeopleIcon from "@mui/icons-material/People";
 
 import styles from "./account.module.scss";
@@ -12,6 +12,10 @@ const AccountListPage = () => {
   const [mountedTabs, setMountedTabs] = useState<Set<TabId>>(
     new Set<TabId>(["list"]),
   );
+
+  useEffect(() => {
+    document.title = "Tài khoản";
+  }, []);
 
   const handleTabChange = (tab: TabId) => {
     setActiveTab(tab);

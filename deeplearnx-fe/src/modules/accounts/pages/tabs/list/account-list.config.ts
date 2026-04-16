@@ -356,6 +356,10 @@ export const showButtons = (
     return false;
   }
 
+  if (rolesCurr.includes(SUPERADMIN)) {
+    return true;
+  }
+
   if (rolesCurr.includes(ADMIN) && user?.username !== row.username) {
     return false;
   }

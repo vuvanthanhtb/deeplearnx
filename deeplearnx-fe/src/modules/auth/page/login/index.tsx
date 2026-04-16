@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 
 import { useAppDispatch, useAppSelector } from "@/shell/redux/hooks";
@@ -22,6 +22,10 @@ const LoginPage = () => {
   const [formValues, setFormValues] =
     useState<Record<string, unknown>>(initialValues);
 
+  useEffect(() => {
+    document.title = "Đăng nhập";
+  }, []);
+
   const onChange = (data: Record<string, unknown>) => {
     setFormValues((prev) => ({ ...prev, ...data }));
   };
@@ -43,7 +47,9 @@ const LoginPage = () => {
       <div className={styles["form-login"]}>
         <img className="image-avatar" src={Avatar} alt="login" />
         <div className={styles["form-login__title"]}>
-          <span className={styles["form-login__title-gradient"]}>Deeplearn</span>
+          <span className={styles["form-login__title-gradient"]}>
+            Deeplearn
+          </span>
           <span className={styles["form-login__title-x"]}>X</span>
         </div>
         <BaseFormComponent

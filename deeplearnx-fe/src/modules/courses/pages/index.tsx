@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SchoolIcon from "@mui/icons-material/School";
 
@@ -46,6 +46,10 @@ const CourseListPage = () => {
   const roles = useAppSelector((state) => state.auth.roles);
   const isAdmin = [SUPERADMIN, ADMIN].some((r) => roles.includes(r));
   const confirm = useConfirm();
+
+  useEffect(() => {
+    document.title = "Khóa học";
+  }, []);
 
   const importInputRef = useRef<HTMLInputElement>(null);
 

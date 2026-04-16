@@ -38,6 +38,10 @@ const HomePage = () => {
   const schedules = useAppSelector((state) => state.schedule.schedules);
 
   useEffect(() => {
+    document.title = "Trang chủ";
+  }, []);
+
+  useEffect(() => {
     dispatch(
       getCourses({
         name: "",

@@ -31,6 +31,10 @@ const SchedulePage = () => {
   const schedules = useAppSelector((state) => state.schedule.schedules);
   const loading = useAppSelector((state) => state.schedule.loading);
 
+  useEffect(() => {
+    document.title = "Lịch";
+  }, []);
+
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());

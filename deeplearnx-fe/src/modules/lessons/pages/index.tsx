@@ -50,6 +50,10 @@ const LessonListPage = () => {
     useState<Record<string, unknown>>(lessonInitialValues);
 
   useEffect(() => {
+    document.title = "Bài học";
+  }, []);
+
+  useEffect(() => {
     if (courseSlug) dispatch(getLessonsByCourseSlug(courseSlug));
   }, [dispatch, courseSlug]);
 
@@ -159,14 +163,24 @@ const LessonListPage = () => {
               title="Tải template"
               action="template"
               onClick={handleDownloadTemplate}
-              style={{ background: "#2d2f31", color: "#9ea3a8", border: "1px solid #3e4143", fontSize: 13 }}
+              style={{
+                background: "#2d2f31",
+                color: "#9ea3a8",
+                border: "1px solid #3e4143",
+                fontSize: 13,
+              }}
             />
             <ButtonComponent
               type="button"
               title="Nhập Excel"
               action="import"
               onClick={handleImportClick}
-              style={{ background: "#1a3a2a", color: "#34a853", border: "1px solid #34a853", fontSize: 13 }}
+              style={{
+                background: "#1a3a2a",
+                color: "#34a853",
+                border: "1px solid #34a853",
+                fontSize: 13,
+              }}
             />
             <input
               ref={importInputRef}
