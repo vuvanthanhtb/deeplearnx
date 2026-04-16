@@ -13,6 +13,8 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
   @Query("SELECT l, l.course.name as courseName FROM Lesson l WHERE l.course.slug = :courseSlug ORDER BY l.position")
   List<Lesson> searchByCourseSlug(String courseSlug);
 
+  long countByCourse_Id(Long courseId);
+
   boolean existsByCourseAndSlug(Course course, String slug);
 
   boolean existsByCourseAndSlugAndIdNot(Course course, String slug, Long id);

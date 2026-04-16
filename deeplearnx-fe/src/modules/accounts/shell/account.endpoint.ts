@@ -5,6 +5,7 @@ const ACCOUNT_ENDPOINT = {
   ACCOUNTS_BULK_APPROVE: "/api/user-approves/bulk-approve",
   ACCOUNTS_BULK_REJECT: "/api/user-approves/bulk-reject",
   ACCOUNTS_IMPORT: "/api/user-approves/import",
+  ACCOUNTS_IMPORT_TEMPLATE: "/api/user-approves/import/template",
 };
 
 export default ACCOUNT_ENDPOINT;

@@ -7,7 +7,8 @@ public record CourseResponse(
     String name,
     String slug,
     String description,
-    LocalDateTime createdAt
+    LocalDateTime createdAt,
+    long lessonCount
 ) {
 
 }

@@ -3,21 +3,23 @@ import type { AxiosResponse } from "axios";
 import type { ResponseBase } from "@/libs/interceptor/types";
 import http from "@/libs/interceptor";
 
-import type { CourseQuery, CoursePage, CourseRequest, CourseResponse } from "./courses.type";
+import type {
+  CourseQuery,
+  CoursePage,
+  CourseRequest,
+  CourseResponse,
+  CourseImportResult,
+} from "./courses.type";
 import COURSES_ENDPOINT from "./courses.endpoint";
 
 interface ICoursesRepository {
   getCourses(params?: CourseQuery): Promise<AxiosResponse<ResponseBase<CoursePage>>>;
-  createCourse(
-    data: CourseRequest,
-  ): Promise<AxiosResponse<ResponseBase<CourseResponse>>>;
-  updateCourse(
-    id: number,
-    data: CourseRequest,
-  ): Promise<AxiosResponse<ResponseBase<CourseResponse>>>;
-  deleteCourse(
-    id: number,
-  ): Promise<AxiosResponse<ResponseBase<CourseResponse>>>;
+  createCourse(data: CourseRequest): Promise<AxiosResponse<ResponseBase<CourseResponse>>>;
+  updateCourse(id: number, data: CourseRequest): Promise<AxiosResponse<ResponseBase<CourseResponse>>>;
+  deleteCourse(id: number): Promise<AxiosResponse<ResponseBase<CourseResponse>>>;
+  exportCourses(params?: CourseQuery): Promise<Blob>;
+  importCourses(file: File): Promise<AxiosResponse<ResponseBase<CourseImportResult>>>;
+  downloadImportTemplate(): Promise<Blob>;
 }
 
 class CoursesRepository implements ICoursesRepository {
@@ -62,7 +64,31 @@ class CoursesRepository implements ICoursesRepository {
       method: "DELETE",
     });
   }
+
+  exportCourses(params?: CourseQuery) {
+    return http.download({
+      url: COURSES_ENDPOINT.COURSES_EXPORT,
+      method: "GET",
+      params,
+      filename: "BAO_CAO_DANH_SACH_KHOA_HOC.xlsx",
+    });
+  }
+
+  importCourses(file: File) {
+    return http.upload<CourseImportResult>({
+      url: COURSES_ENDPOINT.COURSES_IMPORT,
+      method: "POST",
+      file,
+    });
+  }
+
+  downloadImportTemplate() {
+    return http.download({
+      url: COURSES_ENDPOINT.COURSES_IMPORT_TEMPLATE,
+      method: "GET",
+      filename: "course_import_template.xlsx",
+    });
+  }
 }
 
-export const coursesService: ICoursesRepository =
-  CoursesRepository.getInstance();
+export const coursesService: ICoursesRepository = CoursesRepository.getInstance();

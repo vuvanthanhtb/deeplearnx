@@ -26,6 +26,13 @@ const COLUMNS_BASE: BaseTableColumn[] = [
     styleCell: { fontFamily: "monospace", fontSize: 13, color: "#5f6368" },
   },
   {
+    name: "lessonCount",
+    label: "Số bài học",
+    type: STRING,
+    style: { textAlign: "center", width: "100px" },
+    styleCell: { textAlign: "center", fontWeight: 600, color: "#1a73e8" },
+  },
+  {
     name: "createdAt",
     label: "Ngày tạo",
     type: STRING,

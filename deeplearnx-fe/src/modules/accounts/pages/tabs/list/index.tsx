@@ -34,6 +34,7 @@ const AccountListTab = () => {
     drawerOptions,
     accountSearchConfig,
     accountUpdateConfig,
+    importInputRef,
     openCreate,
     handleCellAction,
     handleSearch,
@@ -41,18 +42,44 @@ const AccountListTab = () => {
     handleRefresh,
     handlePageChange,
     handleSubmit,
+    handleImportClick,
+    handleImportFile,
+    handleDownloadTemplate,
   } = useAccountList();
 
   return (
     <>
       {isAdmin && (
         <div className={styles.tabToolbar}>
-          <ButtonComponent
-            type="button"
-            title="+ Tạo tài khoản"
-            action={BTN_CREATE}
-            onClick={openCreate}
-          />
+          <div className={styles.headerActions}>
+            <ButtonComponent
+              type="button"
+              title="Tải template"
+              action="template"
+              onClick={handleDownloadTemplate}
+              style={{ background: "#f1f3f4", color: "#3c4043", border: "1px solid #dadce0", fontSize: 13 }}
+            />
+            <ButtonComponent
+              type="button"
+              title="Nhập Excel"
+              action="import"
+              onClick={handleImportClick}
+              style={{ background: "#e6f4ea", color: "#1e8e3e", border: "1px solid #1e8e3e", fontSize: 13 }}
+            />
+            <input
+              ref={importInputRef}
+              type="file"
+              accept=".xlsx"
+              style={{ display: "none" }}
+              onChange={handleImportFile}
+            />
+            <ButtonComponent
+              type="button"
+              title="+ Tạo tài khoản"
+              action={BTN_CREATE}
+              onClick={openCreate}
+            />
+          </div>
         </div>
       )}
 

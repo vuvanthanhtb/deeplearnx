@@ -37,6 +37,12 @@ public class TemplateInitializer {
   @Value("${export.template.user-import}")
   private String userImportTemplatePath;
 
+  @Value("${export.template.course-import}")
+  private String courseImportTemplatePath;
+
+  @Value("${export.template.lesson-import}")
+  private String lessonImportTemplatePath;
+
   @EventListener(ApplicationReadyEvent.class)
   public void initTemplates() {
     File dir = new File(templateDir);
@@ -55,6 +61,20 @@ public class TemplateInitializer {
         new int[]{22, 32, 28, 20, 18, 22});
 
     createImportTemplateIfAbsent(userImportTemplatePath);
+
+    createImportTemplateIfAbsent(courseImportTemplatePath,
+        "NHẬP DANH SÁCH KHÓA HỌC",
+        "Các cột có dấu (*) là bắt buộc.",
+        new String[]{"STT", "Tên khóa học*", "Mô tả"},
+        new int[]{8, 35, 50},
+        new String[]{"1", "Lập trình Java cơ bản", "Khóa học dành cho người mới bắt đầu"});
+
+    createImportTemplateIfAbsent(lessonImportTemplatePath,
+        "NHẬP DANH SÁCH BÀI HỌC",
+        "Slug khóa học phải tồn tại trong hệ thống. Các cột có dấu (*) là bắt buộc.",
+        new String[]{"STT", "Slug khóa học*", "Tiêu đề bài học*", "URL Video", "Thứ tự"},
+        new int[]{8, 28, 35, 45, 12},
+        new String[]{"1", "lap-trinh-java-co-ban", "Bài 1: Giới thiệu", "https://youtube.com/watch?v=xxx", "1"});
   }
 
   private void createIfAbsent(String path, String title, String[] headers, int[] colWidths) {
@@ -150,6 +170,69 @@ public class TemplateInitializer {
     style.setAlignment(HorizontalAlignment.CENTER);
     style.setVerticalAlignment(VerticalAlignment.CENTER);
     return style;
+  }
+
+  // ── Import template (generic) ─────────────────────────────────────────────
+  private void createImportTemplateIfAbsent(String path, String title, String instruction,
+      String[] headers, int[] colWidths, String[] sampleData) {
+    File file = new File(path);
+    if (file.exists()) {
+      return;
+    }
+    try (XSSFWorkbook wb = new XSSFWorkbook();
+        FileOutputStream fos = new FileOutputStream(file)) {
+
+      Sheet sheet = wb.createSheet("Sheet1");
+      for (int i = 0; i < colWidths.length; i++) {
+        sheet.setColumnWidth(i, colWidths[i] * 256);
+      }
+      sheet.createFreezePane(0, 4);
+      int totalCols = colWidths.length - 1;
+
+      // Row 0: Tiêu đề
+      Row r0 = sheet.createRow(0);
+      r0.setHeightInPoints(30);
+      Cell titleCell = r0.createCell(0);
+      titleCell.setCellValue(title);
+      titleCell.setCellStyle(titleStyle(wb));
+      sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, totalCols));
+
+      // Row 1: Hướng dẫn
+      Row r1 = sheet.createRow(1);
+      r1.setHeightInPoints(18);
+      Cell noteCell = r1.createCell(0);
+      noteCell.setCellValue(instruction);
+      noteCell.setCellStyle(italicStyle(wb));
+      sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, totalCols));
+
+      // Row 2: Trống
+      sheet.createRow(2).setHeightInPoints(6);
+
+      // Row 3: Header
+      Row r3 = sheet.createRow(3);
+      r3.setHeightInPoints(22);
+      CellStyle hs = headerStyle(wb);
+      for (int i = 0; i < headers.length; i++) {
+        Cell c = r3.createCell(i);
+        c.setCellValue(headers[i]);
+        c.setCellStyle(hs);
+      }
+
+      // Row 4: Dữ liệu mẫu
+      Row r4 = sheet.createRow(4);
+      r4.setHeightInPoints(20);
+      CellStyle ds = dataStyle(wb);
+      for (int i = 0; i < sampleData.length; i++) {
+        Cell c = r4.createCell(i);
+        c.setCellValue(sampleData[i]);
+        c.setCellStyle(ds);
+      }
+
+      wb.write(fos);
+      log.info("Created import template: {}", file.getAbsolutePath());
+    } catch (Exception e) {
+      log.error("Failed to create import template: {}", path, e);
+    }
   }
 
   // ── Import template ───────────────────────────────────────────────────────

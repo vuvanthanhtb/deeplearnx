@@ -6,7 +6,7 @@ import {
 import { BUTTON, DATE, TEXT } from "@/libs/constants/form.constant";
 import { PAGE_CURRENT, PAGE_SIZE } from "@/libs/constants/table.constant";
 import type { IBaseFormConfig } from "@/libs/types/config-form.type";
-import { getDateFromNow } from "@/libs/utils/date.utils";
+import { getDateFromNow, toDateKey } from "@/libs/utils/date.utils";
 
 const courseSearchConfig: IBaseFormConfig = {
   fields: [
@@ -92,8 +92,8 @@ export const parsePayloadSearch = (
 ) => {
   const params: Record<string, unknown> = {
     name: String(data.name ?? ""),
-    fromDate: String(data.fromDate ?? ""),
-    toDate: String(data.toDate ?? ""),
+    fromDate: toDateKey(data.fromDate as Date),
+    toDate: toDateKey(data.toDate as Date),
   };
   if (!isExport) {
     params["page"] = PAGE_CURRENT;

@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: deeplearnx
+#  profiles:
+#    active: ${SPRING_PROFILES_ACTIVE:local}
   datasource:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USERNAME}
@@ -43,4 +45,6 @@ export:
     course: ./templates/course_export_template.xlsx
     user: ./templates/user_export_template.xlsx
     user-import: ./templates/user_import_template.xlsx
+    course-import: ./templates/course_import_template.xlsx
+    lesson-import: ./templates/lesson_import_template.xlsx
   start-row: 4

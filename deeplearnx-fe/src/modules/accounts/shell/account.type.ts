@@ -47,3 +47,9 @@ export interface AccountPage {
   page: number;
   size: number;
 }
+
+export interface AccountImportResult {
+  total: number;
+  success: number;
+  failed: number;
+}

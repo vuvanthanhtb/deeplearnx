@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useRef, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SchoolIcon from "@mui/icons-material/School";
 
@@ -9,6 +9,9 @@ import {
   createCourse,
   updateCourse,
   deleteCourse,
+  exportCourses,
+  importCourses,
+  downloadCourseImportTemplate,
 } from "../shell/courses.slice";
 import BaseDrawerComponent from "@/libs/components/ui/base-drawer";
 import BaseFormComponent from "@/libs/components/ui/base-form";
@@ -31,7 +34,9 @@ import {
   BTN_DELETE,
   BTN_EDIT,
   BTN_LESSONS,
+  BTN_REFRESH,
   BTN_SAVE,
+  BTN_SEARCH,
 } from "@/libs/constants/button.constant";
 
 const CourseListPage = () => {
@@ -41,6 +46,8 @@ const CourseListPage = () => {
   const roles = useAppSelector((state) => state.auth.roles);
   const isAdmin = [SUPERADMIN, ADMIN].some((r) => roles.includes(r));
   const confirm = useConfirm();
+
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [mode, setMode] = useState<"create" | "update">("create");
@@ -99,6 +106,25 @@ const CourseListPage = () => {
     setSearchValues(courseSearchInitialValues);
   };
 
+  const handleExport = () => {
+    dispatch(exportCourses(parsePayloadSearch(searchValues)));
+  };
+
+  const handleImportClick = () => {
+    importInputRef.current?.click();
+  };
+
+  const handleImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    dispatch(importCourses(file));
+    e.target.value = "";
+  };
+
+  const handleDownloadTemplate = () => {
+    dispatch(downloadCourseImportTemplate());
+  };
+
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
     dispatch(getCourses({ ...query, page }));
   };
@@ -129,7 +155,54 @@ const CourseListPage = () => {
           <SchoolIcon sx={{ color: "#1a73e8", fontSize: 28 }} />
           <span className={styles.title}>Khóa học</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div className={styles.headerActions}>
+          {isAdmin && (
+            <>
+              <ButtonComponent
+                type="button"
+                title="Tải template"
+                action="template"
+                onClick={handleDownloadTemplate}
+                style={{
+                  background: "#f1f3f4",
+                  color: "#3c4043",
+                  border: "1px solid #dadce0",
+                  fontSize: 13,
+                }}
+              />
+              <ButtonComponent
+                type="button"
+                title="Nhập Excel"
+                action="import"
+                onClick={handleImportClick}
+                style={{
+                  background: "#e6f4ea",
+                  color: "#1e8e3e",
+                  border: "1px solid #1e8e3e",
+                  fontSize: 13,
+                }}
+              />
+              <input
+                ref={importInputRef}
+                type="file"
+                accept=".xlsx"
+                style={{ display: "none" }}
+                onChange={handleImportFile}
+              />
+            </>
+          )}
+          <ButtonComponent
+            type="button"
+            title="Xuất Excel"
+            action="export"
+            onClick={handleExport}
+            style={{
+              background: "#e8f0fe",
+              color: "#1a73e8",
+              border: "1px solid #1a73e8",
+              fontSize: 13,
+            }}
+          />
           {isAdmin && (
             <ButtonComponent
               type="button"
@@ -148,8 +221,8 @@ const CourseListPage = () => {
           values={searchValues}
           onChange={setSearchValues}
           handlers={{
-            refresh: handleRefresh,
-            submit: handleSearch,
+            [BTN_REFRESH]: handleRefresh,
+            [BTN_SEARCH]: handleSearch,
           }}
         />
       </div>

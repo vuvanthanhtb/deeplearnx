@@ -3,7 +3,7 @@ import type { AxiosResponse } from "axios";
 import type { ResponseBase } from "@/libs/interceptor/types";
 import http from "@/libs/interceptor";
 
-import type { LessonRequest, LessonResponse } from "./lessons.type";
+import type { LessonImportResult, LessonRequest, LessonResponse } from "./lessons.type";
 import LESSONS_ENDPOINT from "./lessons.endpoint";
 
 interface ILessonsRepository {
@@ -20,6 +20,8 @@ interface ILessonsRepository {
   deleteLesson(
     id: number,
   ): Promise<AxiosResponse<ResponseBase<LessonResponse>>>;
+  importLessons(file: File): Promise<AxiosResponse<ResponseBase<LessonImportResult>>>;
+  downloadImportTemplate(): Promise<Blob>;
 }
 
 class LessonsRepository implements ILessonsRepository {
@@ -64,6 +66,22 @@ class LessonsRepository implements ILessonsRepository {
     return http.call<LessonResponse>({
       url: `${LESSONS_ENDPOINT.DELETE_LESSON}/${id}`,
       method: "DELETE",
+    });
+  }
+
+  importLessons(file: File) {
+    return http.upload<LessonImportResult>({
+      url: LESSONS_ENDPOINT.LESSONS_IMPORT,
+      method: "POST",
+      file,
+    });
+  }
+
+  downloadImportTemplate() {
+    return http.download({
+      url: LESSONS_ENDPOINT.LESSONS_IMPORT_TEMPLATE,
+      method: "GET",
+      filename: "lesson_import_template.xlsx",
     });
   }
 }

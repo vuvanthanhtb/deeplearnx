@@ -75,6 +75,39 @@ export const deleteLesson = createAsyncThunk(
   },
 );
 
+export const importLessons = createAsyncThunk(
+  "lessons/importLessons",
+  async (payload: { file: File; courseSlug: string }, thunkAPI) => {
+    try {
+      const { data: response } = await lessonsService.importLessons(payload.file);
+      const result = response.data;
+      await thunkAPI.dispatch(getLessonsByCourseSlug(payload.courseSlug));
+      if (result.failed === 0) {
+        toastSuccess(`Nhập thành công ${result.success}/${result.total} bài học`);
+      } else {
+        toastError(`${result.success}/${result.total} thành công, ${result.failed} dòng lỗi`);
+      }
+      return result;
+    } catch (error: unknown) {
+      toastError(error instanceof Error ? error.message : "Nhập file thất bại");
+      return thunkAPI.rejectWithValue("IMPORT_FAILED");
+    }
+  },
+);
+
+export const downloadLessonImportTemplate = createAsyncThunk(
+  "lessons/downloadTemplate",
+  async (_, thunkAPI) => {
+    try {
+      await lessonsService.downloadImportTemplate();
+      return true;
+    } catch (error: unknown) {
+      toastError(error instanceof Error ? error.message : "Tải template thất bại");
+      return thunkAPI.rejectWithValue("TEMPLATE_FAILED");
+    }
+  },
+);
+
 const lessonsSlice = createSlice({
   name: "lessons",
   initialState,

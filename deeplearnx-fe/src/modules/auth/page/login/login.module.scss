@@ -2,15 +2,18 @@
   display: flex;
   flex-direction: row;
   overflow: hidden;
+  min-height: 100vh;
 
   img {
     width: calc(100vw - 30%);
     height: 100vh;
     object-fit: cover;
+    flex-shrink: 0;
   }
 
   .form-login {
     width: 30%;
+    min-width: 320px;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -19,9 +22,26 @@
     padding-inline: 30px;
 
     &__title {
-      font-size: 30px;
-      font-weight: 600;
+      display: flex;
+      align-items: baseline;
       margin-bottom: 50px;
+      font-style: italic;
+    }
+
+    &__title-gradient {
+      background: linear-gradient(90deg, #4facfe, #00f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 32px;
+      font-weight: 800;
+    }
+
+    &__title-x {
+      color: #111;
+      font-size: 38px;
+      font-weight: 800;
+      font-style: normal;
     }
 
     &__switch {
@@ -37,6 +57,35 @@
         &:hover {
           text-decoration: underline;
         }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+
+    img {
+      display: none;
+    }
+
+    .form-login {
+      width: 100%;
+      min-width: unset;
+      height: 100vh;
+      padding-inline: 24px;
+
+      &__title {
+        margin-bottom: 32px;
+      }
+
+      &__title-gradient {
+        font-size: 26px;
+      }
+
+      &__title-x {
+        font-size: 32px;
       }
     }
   }

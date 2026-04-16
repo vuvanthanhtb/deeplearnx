@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
@@ -14,6 +14,8 @@ import {
   createLesson,
   updateLesson,
   deleteLesson,
+  importLessons,
+  downloadLessonImportTemplate,
 } from "../shell/lessons.slice";
 import type { LessonResponse } from "../shell/lessons.type";
 import { COURSES_PATH } from "@/modules/courses/shell/courses.route";
@@ -37,6 +39,8 @@ const LessonListPage = () => {
     [SUPERADMIN, ADMIN].some((r) => state.auth.roles.includes(r)),
   );
   const confirm = useConfirm();
+
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   const [activeLesson, setActiveLesson] = useState<LessonResponse | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -65,6 +69,19 @@ const LessonListPage = () => {
       setActiveLesson(courseLessons[0]);
     }
   }, [courseLessons]);
+
+  const handleImportClick = () => importInputRef.current?.click();
+
+  const handleImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    dispatch(importLessons({ file, courseSlug }));
+    e.target.value = "";
+  };
+
+  const handleDownloadTemplate = () => {
+    dispatch(downloadLessonImportTemplate());
+  };
 
   const openCreate = () => {
     setMode("create");
@@ -136,12 +153,35 @@ const LessonListPage = () => {
         </div>
 
         {isAdmin && (
-          <ButtonComponent
-            type="button"
-            title="+ Tạo bài học"
-            action="create"
-            onClick={openCreate}
-          />
+          <div className={styles.headerActions}>
+            <ButtonComponent
+              type="button"
+              title="Tải template"
+              action="template"
+              onClick={handleDownloadTemplate}
+              style={{ background: "#2d2f31", color: "#9ea3a8", border: "1px solid #3e4143", fontSize: 13 }}
+            />
+            <ButtonComponent
+              type="button"
+              title="Nhập Excel"
+              action="import"
+              onClick={handleImportClick}
+              style={{ background: "#1a3a2a", color: "#34a853", border: "1px solid #34a853", fontSize: 13 }}
+            />
+            <input
+              ref={importInputRef}
+              type="file"
+              accept=".xlsx"
+              style={{ display: "none" }}
+              onChange={handleImportFile}
+            />
+            <ButtonComponent
+              type="button"
+              title="+ Tạo bài học"
+              action="create"
+              onClick={openCreate}
+            />
+          </div>
         )}
       </div>
 

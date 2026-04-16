@@ -28,6 +28,13 @@
   }
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 // ── Search Bar ───────────────────────────────────────────
 .searchBar {
   padding: 12px 24px;
@@ -166,6 +173,35 @@
 .chipDefault {
   background: #f1f3f4;
   color: #5f6368;
+}
+
+// ── Responsive ──────────────────────────────────────────
+@media (max-width: 768px) {
+  // Đổi từ fixed-height sang natural flow để outer box cuộn
+  .wrapper {
+    height: auto;
+    min-height: 100%;
+  }
+
+  .header {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .headerActions {
+    gap: 6px;
+  }
+
+  .searchBar {
+    padding: 10px 16px;
+  }
+
+  .tableWrapper {
+    flex: none;
+    overflow: visible;
+    padding: 12px;
+  }
 }
 
 // ── Empty state ──────────────────────────────────────────

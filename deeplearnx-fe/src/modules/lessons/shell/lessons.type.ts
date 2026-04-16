@@ -13,3 +13,9 @@ export interface LessonRequest {
   videoUrl: string;
   position: number;
 }
+
+export interface LessonImportResult {
+  total: number;
+  success: number;
+  failed: number;
+}

@@ -12,6 +12,8 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
     padding-top: 27px;
   }
 
@@ -23,6 +25,18 @@
       top: 60%;
       right: -20px;
       transform: translateY(-50%);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    .form-btn-container {
+      flex-direction: column-reverse;
+
+      button {
+        width: 100%;
+      }
     }
   }
 }

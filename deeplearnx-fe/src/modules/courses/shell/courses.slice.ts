@@ -8,11 +8,7 @@ import { SUCCESS_CODE } from "@/libs/constants/error-code.constant";
 import { toastError, toastSuccess } from "@/libs/custom-toast";
 import { formatDate } from "@/libs/utils/date.utils";
 
-import type {
-  CourseQuery,
-  CourseRequest,
-  CourseResponse,
-} from "./courses.type";
+import type { CourseQuery, CourseRequest, CourseResponse } from "./courses.type";
 import { coursesService } from "./courses.service";
 import { PAGE_CURRENT, PAGE_SIZE } from "@/libs/constants/table.constant";
 
@@ -22,6 +18,7 @@ export type CourseRow = {
   slug: string;
   description: string;
   createdAt: string;
+  lessonCount: number;
 };
 
 const buildCourseTable = (
@@ -30,19 +27,14 @@ const buildCourseTable = (
   totalPages: number,
   page: number,
   size: number,
-): {
-  content: CourseRow[];
-  totalElements: number;
-  totalPages: number;
-  page: number;
-  size: number;
-} => ({
+) => ({
   content: content.map((c) => ({
     id: c.id,
     name: c.name,
     slug: c.slug,
     description: c.description,
     createdAt: c.createdAt ? formatDate(c.createdAt) : "—",
+    lessonCount: c.lessonCount ?? 0,
   })),
   totalElements,
   totalPages,
@@ -134,6 +126,52 @@ export const deleteCourse = createAsyncThunk(
   },
 );
 
+export const exportCourses = createAsyncThunk(
+  "courses/exportCourses",
+  async (params: CourseQuery | undefined, thunkAPI) => {
+    try {
+      await coursesService.exportCourses(params);
+      return true;
+    } catch (error: unknown) {
+      toastError(error instanceof Error ? error.message : "Xuất file thất bại");
+      return thunkAPI.rejectWithValue("EXPORT_FAILED");
+    }
+  },
+);
+
+export const importCourses = createAsyncThunk(
+  "courses/importCourses",
+  async (file: File, thunkAPI) => {
+    try {
+      const { data: response } = await coursesService.importCourses(file);
+      const result = response.data;
+      await thunkAPI.dispatch(getCourses(undefined));
+      if (result.failed === 0) {
+        toastSuccess(`Nhập thành công ${result.success}/${result.total} khóa học`);
+      } else {
+        toastError(`${result.success}/${result.total} thành công, ${result.failed} dòng lỗi`);
+      }
+      return result;
+    } catch (error: unknown) {
+      toastError(error instanceof Error ? error.message : "Nhập file thất bại");
+      return thunkAPI.rejectWithValue("IMPORT_FAILED");
+    }
+  },
+);
+
+export const downloadCourseImportTemplate = createAsyncThunk(
+  "courses/downloadTemplate",
+  async (_, thunkAPI) => {
+    try {
+      await coursesService.downloadImportTemplate();
+      return true;
+    } catch (error: unknown) {
+      toastError(error instanceof Error ? error.message : "Tải template thất bại");
+      return thunkAPI.rejectWithValue("TEMPLATE_FAILED");
+    }
+  },
+);
+
 const coursesSlice = createSlice({
   name: "courses",
   initialState,
@@ -144,9 +182,7 @@ const coursesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getCourses.pending, (state) => {
-        state.loading = true;
-      })
+      .addCase(getCourses.pending, (state) => { state.loading = true; })
       .addCase(getCourses.fulfilled, (state, action) => {
         const { data, params } = action.payload;
         state.query = { ...state.query, ...params };
@@ -159,9 +195,7 @@ const coursesSlice = createSlice({
         );
         state.loading = false;
       })
-      .addCase(getCourses.rejected, (state) => {
-        state.loading = false;
-      });
+      .addCase(getCourses.rejected, (state) => { state.loading = false; });
   },
 });
 

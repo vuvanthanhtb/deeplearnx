@@ -264,3 +264,91 @@
   color: #70757a;
   padding: 2px 4px;
 }
+
+// ── Responsive ──────────────────────────────────────────
+@media (max-width: 768px) {
+  // Đổi từ fixed-height sang natural flow để outer box cuộn
+  .wrapper {
+    height: auto;
+    min-height: 100%;
+  }
+
+  .calendarContainer {
+    flex: none;
+    overflow: visible;
+  }
+
+  .header {
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .filters {
+    margin-left: 0;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 6px 12px;
+  }
+
+  .navLeft {
+    flex-wrap: wrap;
+  }
+
+  .navRight {
+    flex-wrap: wrap;
+  }
+
+  .monthLabel {
+    font-size: 15px;
+    min-width: 100px;
+  }
+
+  .calendarGrid {
+    grid-auto-rows: minmax(70px, 1fr);
+  }
+
+  .dayCell {
+    min-height: 70px;
+    padding: 2px;
+  }
+
+  .dateNumber {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+
+  .event {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendarGrid {
+    grid-auto-rows: minmax(50px, 1fr);
+  }
+
+  .dayCell {
+    min-height: 50px;
+  }
+
+  .dayHeaderCell {
+    font-size: 10px;
+    padding: 4px 0;
+  }
+
+  .event {
+    display: none;
+
+    &:first-child {
+      display: flex;
+    }
+  }
+}

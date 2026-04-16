@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/shell/redux/hooks";
 import { useConfirm } from "@/libs/components/ui/confirm-dialog";
@@ -19,8 +19,10 @@ import {
 import {
   createAccount,
   deleteAccount,
+  downloadAccountImportTemplate,
   exportAccounts,
   getAccounts,
+  importAccounts,
   lockAccount,
   unlockAccount,
   updateAccount,
@@ -38,6 +40,8 @@ export const useAccountList = () => {
   const roles = useAppSelector((state) => state.auth.roles);
   const currentUsername = useAppSelector((state) => state.auth.user?.username);
   const confirm = useConfirm();
+
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [mode, setMode] = useState<"create" | "update">("create");
@@ -127,6 +131,21 @@ export const useAccountList = () => {
     return false;
   };
 
+  const handleImportClick = () => {
+    importInputRef.current?.click();
+  };
+
+  const handleImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    dispatch(importAccounts(file));
+    e.target.value = "";
+  };
+
+  const handleDownloadTemplate = () => {
+    dispatch(downloadAccountImportTemplate());
+  };
+
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
     dispatch(getAccounts(buildQuery({ ...searchValues, page })));
     setSearchValues((prev) => ({ ...prev, page }));
@@ -207,6 +226,7 @@ export const useAccountList = () => {
     drawerOptions,
     accountSearchConfig,
     accountUpdateConfig,
+    importInputRef,
     openCreate,
     handleCellAction,
     handleSearch,
@@ -214,5 +234,8 @@ export const useAccountList = () => {
     handleRefresh,
     handlePageChange,
     handleSubmit,
+    handleImportClick,
+    handleImportFile,
+    handleDownloadTemplate,
   };
 };

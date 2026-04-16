@@ -9,6 +9,7 @@ import type {
   AccountRequest,
   AccountUpdateRequest,
   AccountResponse,
+  AccountImportResult,
 } from "./account.type";
 import ACCOUNT_ENDPOINT from "./account.endpoint";
 
@@ -42,6 +43,8 @@ interface IAccountRepository {
     id: number,
   ): Promise<AxiosResponse<ResponseBase<AccountResponse>>>;
   exportAccounts(params?: AccountQuery): Promise<Blob>;
+  importAccounts(file: File): Promise<AxiosResponse<ResponseBase<AccountImportResult>>>;
+  downloadImportTemplate(): Promise<Blob>;
   bulkApproveAccounts(
     ids: number[],
   ): Promise<AxiosResponse<ResponseBase<AccountResponse>>>;
@@ -137,6 +140,23 @@ class AccountRepository implements IAccountRepository {
       url: ACCOUNT_ENDPOINT.ACCOUNTS_EXPORT,
       method: "GET",
       params,
+      filename: "BAO_CAO_DANH_SACH_TAI_KHOAN.xlsx",
+    });
+  }
+
+  importAccounts(file: File) {
+    return http.upload<AccountImportResult>({
+      url: ACCOUNT_ENDPOINT.ACCOUNTS_IMPORT,
+      method: "POST",
+      file,
+    });
+  }
+
+  downloadImportTemplate() {
+    return http.download({
+      url: ACCOUNT_ENDPOINT.ACCOUNTS_IMPORT_TEMPLATE,
+      method: "GET",
+      filename: "account_import_template.xlsx",
     });
   }
 
@@ -155,14 +175,6 @@ class AccountRepository implements IAccountRepository {
       data: ids,
     });
   }
-
-  // importAccounts(file: File) {
-  //   return http.upload({
-  //     url: ACCOUNT_ENDPOINT.ACCOUNTS_IMPORT,
-  //     method: "POST",
-  //     file,
-  //   });
-  // }
 }
 
 export const accountService: IAccountRepository =

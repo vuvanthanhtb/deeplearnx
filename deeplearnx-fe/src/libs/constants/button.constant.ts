@@ -17,3 +17,5 @@ export const BTN_BACK = "back";
 export const BTN_NEXT = "next";
 export const BTN_PREV = "prev";
 export const BTN_LESSONS = "lessons";
+export const BTN_IMPORT = "import";
+export const BTN_TEMPLATE = "template";

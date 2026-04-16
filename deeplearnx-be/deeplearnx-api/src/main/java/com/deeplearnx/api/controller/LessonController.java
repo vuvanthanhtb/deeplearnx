@@ -2,9 +2,12 @@ package com.deeplearnx.api.controller;
 
 import com.deeplearnx.application.dto.request.CreateLessonRequest;
 import com.deeplearnx.application.dto.request.UpdateLessonRequest;
+import com.deeplearnx.application.dto.response.LessonImportResult;
 import com.deeplearnx.application.dto.response.LessonResponse;
+import com.deeplearnx.application.service.LessonImportService;
 import com.deeplearnx.application.service.LessonService;
 import com.deeplearnx.core.response.ApiResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,13 +18,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
 public class LessonController {
 
   private final LessonService lessonService;
+  private final LessonImportService lessonImportService;
 
   @GetMapping("/api/courses/{courseSlug}/lessons")
   public ResponseEntity<ApiResponse<List<LessonResponse>>> getLessons(
@@ -52,5 +58,16 @@ public class LessonController {
   public ResponseEntity<ApiResponse<Void>> deleteLesson(@PathVariable Long id) {
     lessonService.delete(id);
     return ResponseEntity.ok(ApiResponse.ok(null));
+  }
+
+  @PostMapping("/api/lessons/import")
+  public ResponseEntity<ApiResponse<LessonImportResult>> importLessons(
+      @RequestParam("file") MultipartFile file) {
+    return ResponseEntity.ok(ApiResponse.ok(lessonImportService.importLessons(file)));
+  }
+
+  @GetMapping("/api/lessons/import/template")
+  public void downloadImportTemplate(HttpServletResponse response) throws Exception {
+    lessonImportService.downloadTemplate(response);
   }
 }

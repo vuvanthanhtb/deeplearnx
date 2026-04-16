@@ -47,7 +47,6 @@ const download = <TParams = unknown, TData = unknown>(
   config: DownloadConfig<TParams, TData>,
 ) => {
   const { url, method = "GET", params, data, filename, isOpen } = config;
-  debugger;
   return call<Blob>({
     url,
     method,

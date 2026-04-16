@@ -18,15 +18,37 @@
 .table-container {
   thead tr th {
     text-align: center;
+    white-space: nowrap;
+  }
+
+  td {
+    white-space: nowrap;
   }
 
   .btn-group {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    flex-wrap: nowrap;
+    gap: 4px;
   }
 
   .row-selected {
     background-color: #e8f0fe !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    font-size: 13px;
+
+    td, th {
+      padding: 6px 8px;
+    }
+  }
+
+  .table-btn-group {
+    flex-wrap: wrap;
+    gap: 6px;
   }
 }

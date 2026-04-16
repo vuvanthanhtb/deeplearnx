@@ -39,7 +39,10 @@ const HeaderComponent = () => {
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Typography variant="body2" sx={{ color: "#3c4043", fontSize: 14 }}>
+      <Typography
+        variant="body2"
+        sx={{ color: "#3c4043", fontSize: 14, display: { xs: "none", sm: "block" } }}
+      >
         {displayName}
       </Typography>
 

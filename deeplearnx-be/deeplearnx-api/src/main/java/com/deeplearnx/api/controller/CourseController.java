@@ -2,12 +2,15 @@ package com.deeplearnx.api.controller;
 
 import com.deeplearnx.application.dto.request.CreateCourseRequest;
 import com.deeplearnx.application.dto.request.UpdateCourseRequest;
+import com.deeplearnx.application.dto.response.CourseImportResult;
 import com.deeplearnx.application.dto.response.CourseResponse;
+import com.deeplearnx.application.service.CourseImportService;
 import com.deeplearnx.application.service.export.CourseExportService;
 import com.deeplearnx.application.service.CourseService;
 import com.deeplearnx.core.response.ApiResponse;
 import com.deeplearnx.core.response.PageResponse;
 import com.deeplearnx.domain.entity.User;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -29,6 +33,7 @@ public class CourseController {
 
   private final CourseService courseService;
   private final CourseExportService courseExportService;
+  private final CourseImportService courseImportService;
 
   @GetMapping
   public ResponseEntity<ApiResponse<PageResponse<CourseResponse>>> getCourses(
@@ -75,7 +80,19 @@ public class CourseController {
       @RequestParam(required = false) String name,
       @RequestParam(required = false) String fromDate,
       @RequestParam(required = false) String toDate,
-      jakarta.servlet.http.HttpServletResponse response) throws Exception {
+      HttpServletResponse response) throws Exception {
     courseExportService.export(name, fromDate, toDate, response);
+  }
+
+  @PostMapping("/import")
+  public ResponseEntity<ApiResponse<CourseImportResult>> importCourses(
+      @RequestParam("file") MultipartFile file,
+      @AuthenticationPrincipal User currentUser) {
+    return ResponseEntity.ok(ApiResponse.ok(courseImportService.importCourses(file, currentUser)));
+  }
+
+  @GetMapping("/import/template")
+  public void downloadImportTemplate(HttpServletResponse response) throws Exception {
+    courseImportService.downloadTemplate(response);
   }
 }

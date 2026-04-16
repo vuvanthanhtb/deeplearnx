@@ -44,6 +44,14 @@
   flex-shrink: 0;
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
 // ── Body ────────────────────────────────────────────────
 .body {
   flex: 1;
@@ -243,6 +251,60 @@
 
   .lessonItem:hover & {
     opacity: 1;
+  }
+}
+
+// ── Responsive ──────────────────────────────────────────
+@media (max-width: 768px) {
+  // overflow: hidden trên .page chặn toàn bộ scroll → xóa bỏ
+  .page {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+  }
+
+  .header {
+    height: auto;
+    padding: 10px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .courseTitle {
+    max-width: 200px;
+    font-size: 13px;
+  }
+
+  .headerActions {
+    gap: 4px;
+  }
+
+  // Body cuộn theo trang thay vì overflow: hidden
+  .body {
+    flex-direction: column;
+    overflow: visible;
+    flex: none;
+  }
+
+  .videoPanel {
+    flex: none;
+    width: 100%;
+    overflow: visible;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    border-left: none;
+    border-top: 1px solid #3e4143;
+    overflow: visible;
+  }
+
+  .lessonList {
+    overflow: visible;
+    max-height: none;
   }
 }
 

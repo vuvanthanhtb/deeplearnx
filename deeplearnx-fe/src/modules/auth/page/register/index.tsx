@@ -44,7 +44,10 @@ const RegisterPage = () => {
       <img src={BackgroundLogin} alt="login" />
       <div className={styles["form-login"]}>
         <img className="image-avatar" src={Avatar} alt="login" />
-        <label className={styles["form-login__title"]}>DeeplearnX</label>
+        <div className={styles["form-login__title"]}>
+          <span className={styles["form-login__title-gradient"]}>Deeplearn</span>
+          <span className={styles["form-login__title-x"]}>X</span>
+        </div>
         <BaseFormComponent
           formConfig={loginConfig}
           validationSchema={registerValidation}

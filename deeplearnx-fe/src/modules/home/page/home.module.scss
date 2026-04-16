@@ -272,6 +272,27 @@
   }
 }
 
+// ── Responsive ──────────────────────────────────────────
+@media (max-width: 768px) {
+  .inner {
+    padding: 16px 16px;
+    gap: 16px;
+  }
+
+  .banner {
+    padding: 20px 20px;
+    border-radius: 12px;
+
+    .bannerText h2 {
+      font-size: 18px;
+    }
+  }
+
+  .bannerIcon {
+    font-size: 52px !important;
+  }
+}
+
 // ── Skeleton ─────────────────────────────────────────────
 .skeletonWrap {
   padding: 14px 20px;

@@ -278,6 +278,39 @@ export const bulkRejectAccounts = createAsyncThunk(
   },
 );
 
+export const importAccounts = createAsyncThunk(
+  "accounts/importAccounts",
+  async (file: File, thunkAPI) => {
+    try {
+      const { data: response } = await accountService.importAccounts(file);
+      const result = response.data;
+      await thunkAPI.dispatch(getAccounts(undefined));
+      if (result.failed === 0) {
+        toastSuccess(`Nhập thành công ${result.success}/${result.total} tài khoản`);
+      } else {
+        toastError(`${result.success}/${result.total} thành công, ${result.failed} dòng lỗi`);
+      }
+      return result;
+    } catch (error: unknown) {
+      toastError(error instanceof Error ? error.message : "Nhập file thất bại");
+      return thunkAPI.rejectWithValue("IMPORT_FAILED");
+    }
+  },
+);
+
+export const downloadAccountImportTemplate = createAsyncThunk(
+  "accounts/downloadTemplate",
+  async (_, thunkAPI) => {
+    try {
+      await accountService.downloadImportTemplate();
+      return true;
+    } catch (error: unknown) {
+      toastError(error instanceof Error ? error.message : "Tải template thất bại");
+      return thunkAPI.rejectWithValue("TEMPLATE_FAILED");
+    }
+  },
+);
+
 const accountSlice = createSlice({
   name: "accounts",
   initialState,
