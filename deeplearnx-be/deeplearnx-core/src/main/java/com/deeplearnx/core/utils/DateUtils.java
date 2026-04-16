@@ -3,10 +3,12 @@ package com.deeplearnx.core.utils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import org.springframework.util.StringUtils;
 
 public class DateUtils {
 
@@ -72,5 +74,28 @@ public class DateUtils {
 
     return (wholeMonths > monthRange)
         || ((wholeMonths == monthRange) && (remainingDays != 0));
+  }
+
+
+  public static LocalDate parseDate(String date) {
+    if (!StringUtils.hasText(date)) {
+      return null;
+    }
+    try {
+      return LocalDate.parse(date);
+    } catch (DateTimeParseException e) {
+      return null;
+    }
+  }
+
+  public static String nextDay(String date) {
+    if (!StringUtils.hasText(date)) {
+      return null;
+    }
+    try {
+      return LocalDate.parse(date).plusDays(1).toString();
+    } catch (DateTimeParseException e) {
+      return null;
+    }
   }
 }

@@ -4,6 +4,7 @@ import com.deeplearnx.application.dto.request.LoginRequest;
 import com.deeplearnx.application.dto.request.RefreshTokenRequest;
 import com.deeplearnx.application.dto.request.RegisterRequest;
 import com.deeplearnx.application.dto.response.AuthResponse;
+import com.deeplearnx.application.dto.response.UserResponse;
 import com.deeplearnx.domain.entity.User;
 
 public interface AuthService {
@@ -15,4 +16,6 @@ public interface AuthService {
   AuthResponse refresh(RefreshTokenRequest request);
 
   void logout(User currentUser);
+
+  UserResponse getProfile(User user);
 }

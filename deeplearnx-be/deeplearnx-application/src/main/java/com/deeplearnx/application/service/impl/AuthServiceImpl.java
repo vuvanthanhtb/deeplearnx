@@ -4,6 +4,8 @@ import com.deeplearnx.application.dto.request.LoginRequest;
 import com.deeplearnx.application.dto.request.RefreshTokenRequest;
 import com.deeplearnx.application.dto.request.RegisterRequest;
 import com.deeplearnx.application.dto.response.AuthResponse;
+import com.deeplearnx.application.dto.response.UserResponse;
+import com.deeplearnx.application.mapper.UserMapper;
 import com.deeplearnx.application.service.AuthService;
 import com.deeplearnx.application.service.RefreshTokenService;
 import com.deeplearnx.core.entity.Role;
@@ -41,6 +43,7 @@ public class AuthServiceImpl implements AuthService {
   private final PasswordEncoder passwordEncoder;
   private final ObjectMapper objectMapper;
   private final RefreshTokenService refreshTokenService;
+  private final UserMapper userMapper;
 
   @Override
   public String register(RegisterRequest request) {
@@ -101,6 +104,11 @@ public class AuthServiceImpl implements AuthService {
   public void logout(User currentUser) {
     log.info("Logout for username={}", currentUser.getUsername());
     refreshTokenService.revokeAll(currentUser);
+  }
+
+  @Override
+  public UserResponse getProfile(User user) {
+    return userMapper.toResponse(user);
   }
 
   private void handleFailedAttempt(String username) {

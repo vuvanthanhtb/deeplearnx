@@ -10,6 +10,7 @@ import com.deeplearnx.core.response.PageResponse;
 import com.deeplearnx.core.utils.SlugUtils;
 import com.deeplearnx.domain.entity.Course;
 import com.deeplearnx.domain.entity.User;
+import com.deeplearnx.infrastructure.persistence.CourseQueryRepository;
 import com.deeplearnx.infrastructure.persistence.CourseRepository;
 import com.deeplearnx.infrastructure.persistence.LessonRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +28,14 @@ public class CourseServiceImpl implements CourseService {
 
   private final CourseRepository courseRepository;
   private final LessonRepository lessonRepository;
+  private final CourseQueryRepository courseQueryRepository;
   private final CourseMapper courseMapper;
 
   @Override
   public PageResponse<CourseResponse> findAll(String name, String fromDate, String toDate, int page, int size) {
     var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-    Page<Course> result = courseRepository.search(name, fromDate, toDate, pageable);
-    return PageResponse.of(result, courseMapper::toResponse);
+    Page<Course> result = courseQueryRepository.search(name, fromDate, toDate, pageable);
+    return PageResponse.of(result, this::toResponseWithCount);
   }
 
   @Override
@@ -83,8 +85,7 @@ public class CourseServiceImpl implements CourseService {
 
   private CourseResponse toResponseWithCount(Course course) {
     long count = lessonRepository.countByCourse_Id(course.getId());
-    return new CourseResponse(course.getId(), course.getName(), course.getSlug(),
-        course.getDescription(), course.getCreatedAt(), count);
+    return courseMapper.toResponse(course, count);
   }
 
   private Course getCourse(Long id) {

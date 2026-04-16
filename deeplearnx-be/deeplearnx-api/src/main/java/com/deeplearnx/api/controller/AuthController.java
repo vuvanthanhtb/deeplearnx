@@ -5,7 +5,6 @@ import com.deeplearnx.application.dto.request.RefreshTokenRequest;
 import com.deeplearnx.application.dto.request.RegisterRequest;
 import com.deeplearnx.application.dto.response.AuthResponse;
 import com.deeplearnx.application.dto.response.UserResponse;
-import com.deeplearnx.application.mapper.UserMapper;
 import com.deeplearnx.application.service.AuthService;
 import com.deeplearnx.core.response.ApiResponse;
 import com.deeplearnx.domain.entity.User;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
   private final AuthService authService;
-  private final UserMapper userMapper;
 
   @PostMapping("/register")
   public ResponseEntity<ApiResponse<String>> register(@RequestBody RegisterRequest request) {
@@ -52,6 +50,6 @@ public class AuthController {
 
   @GetMapping("/me")
   public ResponseEntity<ApiResponse<UserResponse>> me(@AuthenticationPrincipal User user) {
-    return ResponseEntity.ok(ApiResponse.ok(userMapper.toResponse(user)));
+    return ResponseEntity.ok(ApiResponse.ok(authService.getProfile(user)));
   }
 }

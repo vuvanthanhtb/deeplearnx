@@ -9,7 +9,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-  @Mapping(target = "status", expression = "java(user.getStatus() != null ? user.getStatus().name() : null)")
   UserResponse toResponse(User user);
 
   @Mapping(target = "id", ignore = true)
