@@ -3,6 +3,7 @@ package com.deeplearnx.application.service.impl;
 import com.deeplearnx.application.dto.request.CreateCourseRequest;
 import com.deeplearnx.application.dto.request.UpdateCourseRequest;
 import com.deeplearnx.application.dto.response.CourseResponse;
+import com.deeplearnx.application.mapper.CourseMapper;
 import com.deeplearnx.application.service.CourseService;
 import com.deeplearnx.core.exception.NotFoundException;
 import com.deeplearnx.core.response.PageResponse;
@@ -26,14 +27,13 @@ public class CourseServiceImpl implements CourseService {
 
   private final CourseRepository courseRepository;
   private final LessonRepository lessonRepository;
+  private final CourseMapper courseMapper;
 
   @Override
-  public PageResponse<CourseResponse> findAll(String name, int page, int size) {
+  public PageResponse<CourseResponse> findAll(String name, String fromDate, String toDate, int page, int size) {
     var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-    Page<Course> result = StringUtils.hasText(name)
-        ? courseRepository.searchByName(name, pageable)
-        : courseRepository.findAll(pageable);
-    return PageResponse.of(result, this::toResponseWithCount);
+    Page<Course> result = courseRepository.search(name, fromDate, toDate, pageable);
+    return PageResponse.of(result, courseMapper::toResponse);
   }
 
   @Override

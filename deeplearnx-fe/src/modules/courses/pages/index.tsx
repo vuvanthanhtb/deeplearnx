@@ -102,7 +102,7 @@ const CourseListPage = () => {
   };
 
   const handleRefresh = () => {
-    dispatch(getCourses(courseSearchInitialValues));
+    dispatch(getCourses(parsePayloadSearch(courseSearchInitialValues)));
     setSearchValues(courseSearchInitialValues);
   };
 

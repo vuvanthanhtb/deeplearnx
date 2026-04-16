@@ -38,10 +38,12 @@ public class CourseController {
   @GetMapping
   public ResponseEntity<ApiResponse<PageResponse<CourseResponse>>> getCourses(
       @RequestParam(required = false) String name,
+      @RequestParam(required = false) String fromDate,
+      @RequestParam(required = false) String toDate,
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size) {
     return ResponseEntity.ok(
-        ApiResponse.ok(courseService.findAll(name, Math.max(page - 1, 0), Math.max(size, 1))));
+        ApiResponse.ok(courseService.findAll(name, fromDate, toDate, Math.max(page - 1, 0), Math.max(size, 1))));
   }
 
   @GetMapping("/{id}")

@@ -8,7 +8,8 @@ import com.deeplearnx.domain.entity.User;
 
 public interface CourseService {
 
-  PageResponse<CourseResponse> findAll(String name, int page, int size);
+  PageResponse<CourseResponse> findAll(String name, String fromDate, String toDate, int page,
+      int size);
 
   CourseResponse findById(Long id);
 
