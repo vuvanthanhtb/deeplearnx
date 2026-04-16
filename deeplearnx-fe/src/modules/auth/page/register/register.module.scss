@@ -27,7 +27,6 @@
       display: flex;
       align-items: baseline;
       margin-bottom: 40px;
-      font-style: italic;
     }
 
     &__title-gradient {
@@ -37,6 +36,7 @@
       background-clip: text;
       font-size: 32px;
       font-weight: 800;
+      font-style: italic;
     }
 
     &__title-x {
