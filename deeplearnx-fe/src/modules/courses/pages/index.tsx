@@ -1,5 +1,4 @@
 import SchoolIcon from "@mui/icons-material/School";
-
 import BaseDrawerComponent from "@/libs/components/ui/base-drawer";
 import BaseFormComponent from "@/libs/components/ui/base-form";
 import BaseTableComponent from "@/libs/components/ui/base-table";
@@ -116,13 +115,11 @@ const CourseListPage = () => {
           handlePageChange={handlePageChange}
         />
       </div>
-
-      {/* ── Drawer ── */}
       {isAdmin && (
         <BaseDrawerComponent
           open={drawerOpen}
           onClose={() => setDrawerOpen(false)}
-          title={mode === "create" ? "Tạo khóa học mới" : "Cập nhật khóa học"}
+          title={mode}
         >
           <BaseFormComponent
             formConfig={courseConfig}

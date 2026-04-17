@@ -3,10 +3,7 @@ import BaseFormComponent from "@/libs/components/ui/base-form";
 import BaseTableComponent from "@/libs/components/ui/base-table";
 import ButtonComponent from "@/libs/components/ui/button";
 import { colorCell } from "../../account-table.config";
-import {
-  accountConfig,
-  showButtons,
-} from "./account-list.config";
+import { accountConfig, showButtons } from "./account-list.config";
 import { accountSchema, accountUpdateSchema } from "./account-list.validation";
 import styles from "../../account.module.scss";
 import { useAccountList } from "./useAccountList";
@@ -57,14 +54,24 @@ const AccountListTab = () => {
               title="Tải template"
               action="template"
               onClick={handleDownloadTemplate}
-              style={{ background: "#f1f3f4", color: "#3c4043", border: "1px solid #dadce0", fontSize: 13 }}
+              style={{
+                background: "#f1f3f4",
+                color: "#3c4043",
+                border: "1px solid #dadce0",
+                fontSize: 13,
+              }}
             />
             <ButtonComponent
               type="button"
               title="Nhập Excel"
               action="import"
               onClick={handleImportClick}
-              style={{ background: "#e6f4ea", color: "#1e8e3e", border: "1px solid #1e8e3e", fontSize: 13 }}
+              style={{
+                background: "#e6f4ea",
+                color: "#1e8e3e",
+                border: "1px solid #1e8e3e",
+                fontSize: 13,
+              }}
             />
             <input
               ref={importInputRef}

@@ -14,6 +14,7 @@ import BaseDrawerComponent from "@/libs/components/ui/base-drawer";
 import BaseFormComponent from "@/libs/components/ui/base-form";
 import { lessonConfig } from "./lesson.config";
 import { lessonValidation } from "./lesson.validation";
+import clsx from "clsx";
 
 const LessonListPage = () => {
   const navigate = useNavigate();
@@ -132,7 +133,9 @@ const LessonListPage = () => {
               {courseLessons.map((lesson) => (
                 <li
                   key={lesson.id}
-                  className={`${styles.lessonItem} ${activeLesson?.id === lesson.id ? styles.active : ""}`}
+                  className={clsx(styles.lessonItem, {
+                    [styles.active]: activeLesson?.id === lesson.id,
+                  })}
                   onClick={() => setActiveLesson(lesson)}
                 >
                   <span className={styles.lessonItemBadge}>
@@ -178,7 +181,7 @@ const LessonListPage = () => {
       <BaseDrawerComponent
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        title={mode === "create" ? "Thêm bài học mới" : "Cập nhật bài học"}
+        title={mode}
       >
         <BaseFormComponent
           formConfig={lessonConfig}

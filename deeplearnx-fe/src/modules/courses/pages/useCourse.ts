@@ -157,7 +157,7 @@ const useCourse = () => {
     handlePageChange,
     setDrawerOpen,
     drawerOpen,
-    mode,
+    mode: mode === "create" ? "Tạo khóa học mới" : "Cập nhật khóa học",
     handleFormChange,
     handleSave,
   };

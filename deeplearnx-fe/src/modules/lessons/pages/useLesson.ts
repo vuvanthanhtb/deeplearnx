@@ -130,7 +130,7 @@ const useLesson = () => {
     setActiveLesson,
     drawerOpen,
     setDrawerOpen,
-    mode,
+    mode: mode === "create" ? "Thêm bài học mới" : "Cập nhật bài học",
     formValues,
     setFormValues,
     handleDownloadTemplate,
