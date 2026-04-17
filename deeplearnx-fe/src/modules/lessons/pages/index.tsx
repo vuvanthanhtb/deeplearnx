@@ -42,7 +42,6 @@ const LessonListPage = () => {
 
   return (
     <div className={styles.page}>
-      {/* ── Header ── */}
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <Tooltip title="Quay lại" arrow>
@@ -59,7 +58,6 @@ const LessonListPage = () => {
             {course?.name ?? courseSlug}
           </span>
         </div>
-
         {isAdmin && (
           <div className={styles.headerActions}>
             <ButtonComponent
@@ -102,10 +100,7 @@ const LessonListPage = () => {
           </div>
         )}
       </div>
-
-      {/* ── Body ── */}
       <div className={styles.body}>
-        {/* ── Video panel ── */}
         <div className={styles.videoPanel}>
           {activeLesson?.videoUrl ? (
             <div className={styles.videoWrapper}>
@@ -122,14 +117,11 @@ const LessonListPage = () => {
             </div>
           )}
         </div>
-
-        {/* ── Sidebar ── */}
         <div className={styles.sidebar}>
           <div className={styles.sidebarHeader}>
             <h3>Nội dung khóa học</h3>
             <p>{courseLessons.length} bài học</p>
           </div>
-
           {courseLessons.length === 0 ? (
             <div className={styles.empty}>
               <MenuBookIcon sx={{ fontSize: 48, color: "#3e4143" }} />
@@ -183,8 +175,6 @@ const LessonListPage = () => {
           )}
         </div>
       </div>
-
-      {/* ── Drawer ── */}
       <BaseDrawerComponent
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
