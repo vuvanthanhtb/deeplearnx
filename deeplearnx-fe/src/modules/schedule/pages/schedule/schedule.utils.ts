@@ -39,8 +39,11 @@ export const buildCalendarDays = (
   return days;
 };
 
-export const mapToEvent = (s: ScheduleResponse): ScheduleEvent => {
-  const palette = EVENT_PALETTES[s.id % EVENT_PALETTES.length];
+export const mapToEvent = (
+  s: ScheduleResponse,
+  index: number,
+): ScheduleEvent => {
+  const palette = EVENT_PALETTES[index % EVENT_PALETTES.length];
   return {
     id: String(s.id),
     title: s.title,
@@ -52,8 +55,8 @@ export const mapToEvent = (s: ScheduleResponse): ScheduleEvent => {
 export const buildEventsMap = (
   schedules: ScheduleResponse[],
 ): Record<string, ScheduleEvent[]> =>
-  schedules.reduce<Record<string, ScheduleEvent[]>>((acc, s) => {
-    const ev = mapToEvent(s);
+  schedules.reduce<Record<string, ScheduleEvent[]>>((acc, s, index) => {
+    const ev = mapToEvent(s, index);
     acc[ev.date] = [...(acc[ev.date] ?? []), ev];
     return acc;
   }, {});

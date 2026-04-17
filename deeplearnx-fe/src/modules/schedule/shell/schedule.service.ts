@@ -12,11 +12,11 @@ interface IScheduleRepository {
     data: ScheduleRequest,
   ): Promise<AxiosResponse<ResponseBase<ScheduleResponse>>>;
   updateSchedule(
-    id: number,
+    id: string,
     data: ScheduleRequest,
   ): Promise<AxiosResponse<ResponseBase<ScheduleResponse>>>;
   deleteSchedule(
-    id: number,
+    id: string,
   ): Promise<AxiosResponse<ResponseBase<ScheduleResponse>>>;
 }
 
@@ -47,7 +47,7 @@ class ScheduleRepository implements IScheduleRepository {
     });
   }
 
-  updateSchedule(id: number, data: ScheduleRequest) {
+  updateSchedule(id: string, data: ScheduleRequest) {
     return http.call<ScheduleResponse>({
       url: `${SCHEDULE_ENDPOINT.SCHEDULES}/${id}`,
       method: "PUT",
@@ -55,7 +55,7 @@ class ScheduleRepository implements IScheduleRepository {
     });
   }
 
-  deleteSchedule(id: number) {
+  deleteSchedule(id: string) {
     return http.call<ScheduleResponse>({
       url: `${SCHEDULE_ENDPOINT.SCHEDULES}/${id}`,
       method: "DELETE",

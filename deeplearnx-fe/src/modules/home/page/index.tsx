@@ -200,9 +200,9 @@ const HomePage = () => {
               <div className={styles.empty}>Không có lịch sắp tới.</div>
             ) : (
               <ul className={styles.scheduleList}>
-                {upcomingSchedules.map((event) => {
+                {upcomingSchedules.map((event, index) => {
                   const palette =
-                    SCHEDULE_PALETTES[event.id % SCHEDULE_PALETTES.length];
+                    SCHEDULE_PALETTES[index % SCHEDULE_PALETTES.length];
                   return (
                     <li
                       key={event.id}

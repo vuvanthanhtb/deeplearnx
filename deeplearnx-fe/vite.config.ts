@@ -16,4 +16,16 @@ export default defineConfig({
     strictPort: true,
     open: true,
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: [
+          "color-functions",
+          "import",
+          "global-builtin",
+          "if-function",
+        ],
+      },
+    },
+  },
 });
