@@ -14,11 +14,11 @@ interface ILessonsRepository {
     data: LessonRequest,
   ): Promise<AxiosResponse<ResponseBase<LessonResponse>>>;
   updateLesson(
-    id: number,
+    id: string,
     data: LessonRequest,
   ): Promise<AxiosResponse<ResponseBase<LessonResponse>>>;
   deleteLesson(
-    id: number,
+    id: string,
   ): Promise<AxiosResponse<ResponseBase<LessonResponse>>>;
   importLessons(file: File): Promise<AxiosResponse<ResponseBase<LessonImportResult>>>;
   downloadImportTemplate(): Promise<Blob>;
@@ -54,7 +54,7 @@ class LessonsRepository implements ILessonsRepository {
     });
   }
 
-  updateLesson(id: number, data: LessonRequest) {
+  updateLesson(id: string, data: LessonRequest) {
     return http.call<LessonResponse>({
       url: `${LESSONS_ENDPOINT.UPDATE_LESSON}/${id}`,
       method: "PUT",
@@ -62,7 +62,7 @@ class LessonsRepository implements ILessonsRepository {
     });
   }
 
-  deleteLesson(id: number) {
+  deleteLesson(id: string) {
     return http.call<LessonResponse>({
       url: `${LESSONS_ENDPOINT.DELETE_LESSON}/${id}`,
       method: "DELETE",

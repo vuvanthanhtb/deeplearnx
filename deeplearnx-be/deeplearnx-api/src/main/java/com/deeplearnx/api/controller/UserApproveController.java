@@ -10,6 +10,7 @@ import com.deeplearnx.application.service.UserApproveService;
 import com.deeplearnx.application.service.UserImportService;
 import com.deeplearnx.core.response.ApiResponse;
 import com.deeplearnx.core.response.PageResponse;
+import com.deeplearnx.core.utils.IdEncoder;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -44,24 +45,24 @@ public class UserApproveController {
 
   @PutMapping("/{id}")
   public ResponseEntity<ApiResponse<UserApproveResponse>> updateUser(
-      @PathVariable Long id,
+      @PathVariable String id,
       @RequestBody UpdateUserRequest request) {
-    return ResponseEntity.ok(ApiResponse.ok(userApproveService.update(id, request)));
+    return ResponseEntity.ok(ApiResponse.ok(userApproveService.update(IdEncoder.decode(id), request)));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<ApiResponse<UserApproveResponse>> deleteUser(@PathVariable Long id) {
-    return ResponseEntity.ok(ApiResponse.ok(userApproveService.delete(id)));
+  public ResponseEntity<ApiResponse<UserApproveResponse>> deleteUser(@PathVariable String id) {
+    return ResponseEntity.ok(ApiResponse.ok(userApproveService.delete(IdEncoder.decode(id))));
   }
 
   @PostMapping("/{id}/lock")
-  public ResponseEntity<ApiResponse<UserApproveResponse>> lockUser(@PathVariable Long id) {
-    return ResponseEntity.ok(ApiResponse.ok(userApproveService.lock(id)));
+  public ResponseEntity<ApiResponse<UserApproveResponse>> lockUser(@PathVariable String id) {
+    return ResponseEntity.ok(ApiResponse.ok(userApproveService.lock(IdEncoder.decode(id))));
   }
 
   @PostMapping("/{id}/unlock")
-  public ResponseEntity<ApiResponse<UserApproveResponse>> unlockUser(@PathVariable Long id) {
-    return ResponseEntity.ok(ApiResponse.ok(userApproveService.unlock(id)));
+  public ResponseEntity<ApiResponse<UserApproveResponse>> unlockUser(@PathVariable String id) {
+    return ResponseEntity.ok(ApiResponse.ok(userApproveService.unlock(IdEncoder.decode(id))));
   }
 
   @GetMapping
@@ -79,27 +80,29 @@ public class UserApproveController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ApiResponse<UserApproveResponse>> getApproval(@PathVariable Long id) {
-    return ResponseEntity.ok(ApiResponse.ok(userApproveService.findById(id)));
+  public ResponseEntity<ApiResponse<UserApproveResponse>> getApproval(@PathVariable String id) {
+    return ResponseEntity.ok(ApiResponse.ok(userApproveService.findById(IdEncoder.decode(id))));
   }
 
   @PostMapping("/{id}/approve")
-  public ResponseEntity<ApiResponse<UserApproveResponse>> approve(@PathVariable Long id) {
-    return ResponseEntity.ok(ApiResponse.ok(userApproveService.approve(id)));
+  public ResponseEntity<ApiResponse<UserApproveResponse>> approve(@PathVariable String id) {
+    return ResponseEntity.ok(ApiResponse.ok(userApproveService.approve(IdEncoder.decode(id))));
   }
 
   @PostMapping("/{id}/reject")
-  public ResponseEntity<ApiResponse<UserApproveResponse>> reject(@PathVariable Long id) {
-    return ResponseEntity.ok(ApiResponse.ok(userApproveService.reject(id)));
+  public ResponseEntity<ApiResponse<UserApproveResponse>> reject(@PathVariable String id) {
+    return ResponseEntity.ok(ApiResponse.ok(userApproveService.reject(IdEncoder.decode(id))));
   }
 
   @PostMapping("/bulk-approve")
-  public ResponseEntity<ApiResponse<BulkActionResult>> bulkApprove(@RequestBody List<Long> ids) {
+  public ResponseEntity<ApiResponse<BulkActionResult>> bulkApprove(@RequestBody List<String> encodedIds) {
+    List<Long> ids = encodedIds.stream().map(IdEncoder::decode).toList();
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.bulkApprove(ids)));
   }
 
   @PostMapping("/bulk-reject")
-  public ResponseEntity<ApiResponse<BulkActionResult>> bulkReject(@RequestBody List<Long> ids) {
+  public ResponseEntity<ApiResponse<BulkActionResult>> bulkReject(@RequestBody List<String> encodedIds) {
+    List<Long> ids = encodedIds.stream().map(IdEncoder::decode).toList();
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.bulkReject(ids)));
   }
 

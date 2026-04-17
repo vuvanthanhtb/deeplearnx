@@ -16,7 +16,7 @@ import { parseStatusUser } from "@/libs/utils/status.utils";
 import { getRoleName } from "@/libs/utils/role.utils";
 
 export type AccountRow = {
-  id: number;
+  id: string;
   username: string;
   email: string;
   status: string;
@@ -131,7 +131,7 @@ export const createAccount = createAsyncThunk(
 
 export const updateAccount = createAsyncThunk(
   "accounts/updateAccount",
-  async (payload: { id: number; data: AccountUpdateRequest }, thunkAPI) => {
+  async (payload: { id: string; data: AccountUpdateRequest }, thunkAPI) => {
     try {
       await accountService.updateAccount(payload.id, payload.data);
       toastSuccess(SUCCESS_CODE.ACCOUNT_UPDATE);
@@ -145,7 +145,7 @@ export const updateAccount = createAsyncThunk(
 
 export const deleteAccount = createAsyncThunk(
   "accounts/deleteAccount",
-  async (id: number, thunkAPI) => {
+  async (id: string, thunkAPI) => {
     try {
       await accountService.deleteAccount(id);
       toastSuccess(SUCCESS_CODE.ACCOUNT_DELETE);
@@ -159,7 +159,7 @@ export const deleteAccount = createAsyncThunk(
 
 export const lockAccount = createAsyncThunk(
   "accounts/lockAccount",
-  async (id: number, thunkAPI) => {
+  async (id: string, thunkAPI) => {
     try {
       await accountService.lockAccount(id);
       toastSuccess(SUCCESS_CODE.ACCOUNT_LOCK);
@@ -173,7 +173,7 @@ export const lockAccount = createAsyncThunk(
 
 export const unlockAccount = createAsyncThunk(
   "accounts/unlockAccount",
-  async (id: number, thunkAPI) => {
+  async (id: string, thunkAPI) => {
     try {
       await accountService.unlockAccount(id);
       toastSuccess(SUCCESS_CODE.ACCOUNT_UNLOCK);
@@ -209,7 +209,7 @@ export const getPendingAccounts = createAsyncThunk(
 
 export const approveAccount = createAsyncThunk(
   "accounts/approveAccount",
-  async (id: number, thunkAPI) => {
+  async (id: string, thunkAPI) => {
     try {
       await accountService.approveAccount(id);
       toastSuccess(SUCCESS_CODE.ACCOUNT_APPROVE);
@@ -223,7 +223,7 @@ export const approveAccount = createAsyncThunk(
 
 export const rejectAccount = createAsyncThunk(
   "accounts/rejectAccount",
-  async (id: number, thunkAPI) => {
+  async (id: string, thunkAPI) => {
     try {
       await accountService.rejectAccount(id);
       toastSuccess(SUCCESS_CODE.ACCOUNT_REJECT);
@@ -252,7 +252,7 @@ export const exportAccounts = createAsyncThunk(
 
 export const bulkApproveAccounts = createAsyncThunk(
   "accounts/bulkApproveAccounts",
-  async (ids: number[], thunkAPI) => {
+  async (ids: string[], thunkAPI) => {
     try {
       await accountService.bulkApproveAccounts(ids);
       toastSuccess(SUCCESS_CODE.ACCOUNT_BULK_APPROVE);
@@ -266,7 +266,7 @@ export const bulkApproveAccounts = createAsyncThunk(
 
 export const bulkRejectAccounts = createAsyncThunk(
   "accounts/bulkRejectAccounts",
-  async (ids: number[], thunkAPI) => {
+  async (ids: string[], thunkAPI) => {
     try {
       await accountService.bulkRejectAccounts(ids);
       toastSuccess(SUCCESS_CODE.ACCOUNT_BULK_REJECT);

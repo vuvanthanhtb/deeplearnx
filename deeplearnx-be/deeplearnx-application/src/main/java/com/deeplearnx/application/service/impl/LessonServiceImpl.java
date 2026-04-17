@@ -15,6 +15,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Slf4j
@@ -38,23 +39,21 @@ public class LessonServiceImpl implements LessonService {
   }
 
   @Override
+  @Transactional
   public LessonResponse create(CreateLessonRequest request) {
     log.info("Create lesson title={} in course={}", request.title(), request.courseSlug());
     Course course = getCourse(request.courseSlug());
-    if (course == null) {
-      throw new NotFoundException("Course not found");
-    }
-    String slug = generateUniqueSlug(request.title(), course, null);
     Lesson lesson = new Lesson();
     lesson.setCourse(course);
     lesson.setTitle(request.title());
-    lesson.setSlug(slug);
+    lesson.setSlug(generateUniqueSlug(request.title(), course, null));
     lesson.setVideoUrl(request.videoUrl());
     lesson.setPosition(request.position());
     return lessonMapper.toResponse(lessonRepository.save(lesson));
   }
 
   @Override
+  @Transactional
   public LessonResponse update(Long id, UpdateLessonRequest request) {
     log.info("Update lesson id={}", id);
     Lesson lesson = getLesson(id);
@@ -72,6 +71,7 @@ public class LessonServiceImpl implements LessonService {
   }
 
   @Override
+  @Transactional
   public void delete(Long id) {
     log.info("Delete lesson id={}", id);
     getLesson(id);
@@ -92,10 +92,15 @@ public class LessonServiceImpl implements LessonService {
     String base = SlugUtils.toSlug(title);
     String slug = base;
     int counter = 1;
-    while (lessonRepository.existsByCourseAndSlugAndIdNot(course, slug,
-        excludeId != null ? excludeId : 0L)) {
+    while (slugExists(course, slug, excludeId)) {
       slug = base + "-" + counter++;
     }
     return slug;
+  }
+
+  private boolean slugExists(Course course, String slug, Long excludeId) {
+    return excludeId == null
+        ? lessonRepository.existsByCourseAndSlug(course, slug)
+        : lessonRepository.existsByCourseAndSlugAndIdNot(course, slug, excludeId);
   }
 }

@@ -33,6 +33,7 @@ import {
   BTN_CREATE,
   BTN_DELETE,
   BTN_EDIT,
+  BTN_EXPORT,
   BTN_LESSONS,
   BTN_REFRESH,
   BTN_SAVE,
@@ -55,7 +56,7 @@ const CourseListPage = () => {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [mode, setMode] = useState<"create" | "update">("create");
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [formValues, setFormValues] =
     useState<Record<string, unknown>>(courseInitialValues);
   const [searchValues, setSearchValues] = useState<Record<string, unknown>>(
@@ -73,7 +74,7 @@ const CourseListPage = () => {
     row: Record<string, unknown>,
     key?: string,
   ) => {
-    const id = Number(row.id);
+    const id = String(row.id);
     if (key === BTN_LESSONS) {
       navigate(LESSONS_PATH.of(String(row.slug ?? id)));
       return;
@@ -83,7 +84,6 @@ const CourseListPage = () => {
       setSelectedId(id);
       setFormValues({
         name: String(row.name ?? ""),
-        slug: String(row.slug ?? ""),
         description: String(row.description ?? ""),
       });
       setDrawerOpen(true);
@@ -111,7 +111,7 @@ const CourseListPage = () => {
   };
 
   const handleExport = () => {
-    dispatch(exportCourses(parsePayloadSearch(searchValues)));
+    dispatch(exportCourses(parsePayloadSearch(searchValues, true)));
   };
 
   const handleImportClick = () => {
@@ -133,10 +133,13 @@ const CourseListPage = () => {
     dispatch(getCourses({ ...query, page }));
   };
 
+  const handleFormChange = (values: Record<string, unknown>) => {
+    setFormValues(values);
+  };
+
   const handleSave = async (data: Record<string, unknown>) => {
     const payload = {
       name: String(data.name ?? ""),
-      slug: String(data.slug ?? ""),
       description: String(data.description ?? ""),
     };
     let result;
@@ -153,7 +156,6 @@ const CourseListPage = () => {
 
   return (
     <div className={styles.wrapper}>
-      {/* ── Header ── */}
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <SchoolIcon sx={{ color: "#1a73e8", fontSize: 28 }} />
@@ -193,32 +195,17 @@ const CourseListPage = () => {
                 style={{ display: "none" }}
                 onChange={handleImportFile}
               />
+              <ButtonComponent
+                type="button"
+                title="Tạo khóa học"
+                action={BTN_CREATE}
+                onClick={openCreate}
+              />
             </>
-          )}
-          <ButtonComponent
-            type="button"
-            title="Xuất Excel"
-            action="export"
-            onClick={handleExport}
-            style={{
-              background: "#e8f0fe",
-              color: "#1a73e8",
-              border: "1px solid #1a73e8",
-              fontSize: 13,
-            }}
-          />
-          {isAdmin && (
-            <ButtonComponent
-              type="button"
-              title="+ Tạo khóa học"
-              action={BTN_CREATE}
-              onClick={openCreate}
-            />
           )}
         </div>
       </div>
 
-      {/* ── Search ── */}
       <div className={styles.searchBar}>
         <BaseFormComponent
           formConfig={buildCourseSearchConfig(isAdmin)}
@@ -227,11 +214,11 @@ const CourseListPage = () => {
           handlers={{
             [BTN_REFRESH]: handleRefresh,
             [BTN_SEARCH]: handleSearch,
+            [BTN_EXPORT]: handleExport,
           }}
         />
       </div>
 
-      {/* ── Table ── */}
       <div className={styles.tableWrapper}>
         <BaseTableComponent
           tableConfig={tableConfig}
@@ -253,7 +240,7 @@ const CourseListPage = () => {
             formConfig={courseConfig}
             validationSchema={courseSchema}
             values={formValues}
-            onChange={setFormValues}
+            onChange={handleFormChange}
             handlers={{
               [BTN_SAVE]: handleSave,
               [BTN_CLOSE]: () => setDrawerOpen(false),

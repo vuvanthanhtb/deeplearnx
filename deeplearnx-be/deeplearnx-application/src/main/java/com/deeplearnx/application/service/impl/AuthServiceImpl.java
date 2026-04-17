@@ -23,6 +23,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -46,6 +47,7 @@ public class AuthServiceImpl implements AuthService {
   private final UserMapper userMapper;
 
   @Override
+  @Transactional
   public String register(RegisterRequest request) {
     log.info("Register request for username={}", request.username());
     if (userRepository.existsByUsername(request.username())) {
@@ -101,6 +103,7 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
+  @Transactional
   public void logout(User currentUser) {
     log.info("Logout for username={}", currentUser.getUsername());
     refreshTokenService.revokeAll(currentUser);

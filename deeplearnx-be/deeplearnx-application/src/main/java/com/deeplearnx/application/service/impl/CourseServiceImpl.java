@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Slf4j
@@ -51,18 +52,19 @@ public class CourseServiceImpl implements CourseService {
   }
 
   @Override
+  @Transactional
   public CourseResponse create(CreateCourseRequest request, User currentUser) {
     log.info("Create course name={} by user={}", request.name(), currentUser.getUsername());
-    String slug = generateUniqueSlug(request.name(), null);
     Course course = new Course();
     course.setName(request.name());
-    course.setSlug(slug);
+    course.setSlug(generateUniqueSlug(request.name(), null));
     course.setDescription(request.description());
     course.setUser(currentUser);
     return toResponseWithCount(courseRepository.save(course));
   }
 
   @Override
+  @Transactional
   public CourseResponse update(Long id, UpdateCourseRequest request) {
     log.info("Update course id={}", id);
     Course course = getCourse(id);
@@ -77,6 +79,7 @@ public class CourseServiceImpl implements CourseService {
   }
 
   @Override
+  @Transactional
   public void delete(Long id) {
     log.info("Delete course id={}", id);
     getCourse(id);
@@ -97,9 +100,15 @@ public class CourseServiceImpl implements CourseService {
     String base = SlugUtils.toSlug(name);
     String slug = base;
     int counter = 1;
-    while (courseRepository.existsBySlugAndIdNot(slug, excludeId != null ? excludeId : 0L)) {
+    while (slugExists(slug, excludeId)) {
       slug = base + "-" + counter++;
     }
     return slug;
+  }
+
+  private boolean slugExists(String slug, Long excludeId) {
+    return excludeId == null
+        ? courseRepository.existsBySlug(slug)
+        : courseRepository.existsBySlugAndIdNot(slug, excludeId);
   }
 }

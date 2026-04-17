@@ -46,7 +46,7 @@ export const createSchedule = createAsyncThunk(
 
 export const updateSchedule = createAsyncThunk(
   "schedule/updateSchedule",
-  async (payload: { id: number; data: ScheduleRequest }, thunkAPI) => {
+  async (payload: { id: string; data: ScheduleRequest }, thunkAPI) => {
     try {
       await scheduleService.updateSchedule(payload.id, payload.data);
       await thunkAPI.dispatch(getSchedules());

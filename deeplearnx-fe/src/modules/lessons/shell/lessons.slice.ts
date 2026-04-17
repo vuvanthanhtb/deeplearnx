@@ -47,7 +47,7 @@ export const createLesson = createAsyncThunk(
 
 export const updateLesson = createAsyncThunk(
   "lessons/updateLesson",
-  async (payload: { id: number; data: LessonRequest }, thunkAPI) => {
+  async (payload: { id: string; data: LessonRequest }, thunkAPI) => {
     try {
       await lessonsService.updateLesson(payload.id, payload.data);
       await thunkAPI.dispatch(getLessonsByCourseSlug(payload.data.courseSlug));
@@ -62,7 +62,7 @@ export const updateLesson = createAsyncThunk(
 
 export const deleteLesson = createAsyncThunk(
   "lessons/deleteLesson",
-  async (payload: { id: number; courseSlug: string }, thunkAPI) => {
+  async (payload: { id: string; courseSlug: string }, thunkAPI) => {
     try {
       await lessonsService.deleteLesson(payload.id);
       await thunkAPI.dispatch(getLessonsByCourseSlug(payload.courseSlug));

@@ -7,6 +7,7 @@ import com.deeplearnx.application.dto.response.LessonResponse;
 import com.deeplearnx.application.service.LessonImportService;
 import com.deeplearnx.application.service.LessonService;
 import com.deeplearnx.core.response.ApiResponse;
+import com.deeplearnx.core.utils.IdEncoder;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -43,20 +44,20 @@ public class LessonController {
   }
 
   @GetMapping("/api/lessons/{id}")
-  public ResponseEntity<ApiResponse<LessonResponse>> getLesson(@PathVariable Long id) {
-    return ResponseEntity.ok(ApiResponse.ok(lessonService.findById(id)));
+  public ResponseEntity<ApiResponse<LessonResponse>> getLesson(@PathVariable String id) {
+    return ResponseEntity.ok(ApiResponse.ok(lessonService.findById(IdEncoder.decode(id))));
   }
 
   @PutMapping("/api/lessons/{id}")
   public ResponseEntity<ApiResponse<LessonResponse>> updateLesson(
-      @PathVariable Long id,
+      @PathVariable String id,
       @RequestBody UpdateLessonRequest request) {
-    return ResponseEntity.ok(ApiResponse.ok(lessonService.update(id, request)));
+    return ResponseEntity.ok(ApiResponse.ok(lessonService.update(IdEncoder.decode(id), request)));
   }
 
   @DeleteMapping("/api/lessons/{id}")
-  public ResponseEntity<ApiResponse<Void>> deleteLesson(@PathVariable Long id) {
-    lessonService.delete(id);
+  public ResponseEntity<ApiResponse<Void>> deleteLesson(@PathVariable String id) {
+    lessonService.delete(IdEncoder.decode(id));
     return ResponseEntity.ok(ApiResponse.ok(null));
   }
 

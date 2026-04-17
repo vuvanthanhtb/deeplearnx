@@ -13,14 +13,6 @@ export const courseConfig: IBaseFormConfig = {
       size: 12,
     },
     {
-      type: TEXT,
-      name: "slug",
-      label: "Slug",
-      placeholder: "",
-      size: 12,
-      disabled: true,
-    },
-    {
       type: EDITOR,
       name: "description",
       label: "Mô tả",
@@ -52,6 +44,5 @@ export const courseConfig: IBaseFormConfig = {
 
 export const courseInitialValues = {
   name: "",
-  slug: "",
   description: "",
 };

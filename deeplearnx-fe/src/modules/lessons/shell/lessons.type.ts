@@ -1,7 +1,7 @@
 export interface LessonResponse {
-  id: number;
+  id: string;
   title: string;
-  courseId: number;
+  courseId: string;
   videoUrl: string;
   position: number;
   slug: string;

@@ -1,5 +1,5 @@
 export interface CourseResponse {
-  id: number;
+  id: string;
   name: string;
   slug: string;
   description: string;
@@ -9,7 +9,6 @@ export interface CourseResponse {
 
 export interface CourseRequest {
   name: string;
-  slug: string;
   description: string;
 }
 

@@ -17,6 +17,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -27,6 +28,7 @@ public class ScheduleServiceImpl implements ScheduleService {
   private final ScheduleMapper scheduleMapper;
 
   @Override
+  @Transactional
   public ScheduleResponse create(CreateScheduleRequest request, User currentUser) {
     log.info("Create schedule by user={}", currentUser.getUsername());
     Schedule schedule = scheduleMapper.toEntity(request);
@@ -55,6 +57,7 @@ public class ScheduleServiceImpl implements ScheduleService {
   }
 
   @Override
+  @Transactional
   public ScheduleResponse update(Long id, UpdateScheduleRequest request, User currentUser) {
     log.info("Update schedule id={} by user={}", id, currentUser.getUsername());
     Schedule schedule = getOwnedSchedule(id, currentUser);
@@ -63,6 +66,7 @@ public class ScheduleServiceImpl implements ScheduleService {
   }
 
   @Override
+  @Transactional
   public ScheduleResponse updateStatus(Long id, ScheduleStatus status, User currentUser) {
     log.info("Update schedule status id={} status={} by user={}", id, status, currentUser.getUsername());
     Schedule schedule = getOwnedSchedule(id, currentUser);
@@ -71,6 +75,7 @@ public class ScheduleServiceImpl implements ScheduleService {
   }
 
   @Override
+  @Transactional
   public void delete(Long id, User currentUser) {
     log.info("Delete schedule id={} by user={}", id, currentUser.getUsername());
     getOwnedSchedule(id, currentUser);

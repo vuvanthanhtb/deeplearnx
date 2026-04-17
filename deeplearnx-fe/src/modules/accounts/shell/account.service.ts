@@ -24,32 +24,32 @@ interface IAccountRepository {
     data: AccountRequest,
   ): Promise<AxiosResponse<ResponseBase<AccountResponse>>>;
   updateAccount(
-    id: number,
+    id: string,
     data: AccountUpdateRequest,
   ): Promise<AxiosResponse<ResponseBase<AccountResponse>>>;
   deleteAccount(
-    id: number,
+    id: string,
   ): Promise<AxiosResponse<ResponseBase<AccountResponse>>>;
   lockAccount(
-    id: number,
+    id: string,
   ): Promise<AxiosResponse<ResponseBase<AccountResponse>>>;
   unlockAccount(
-    id: number,
+    id: string,
   ): Promise<AxiosResponse<ResponseBase<AccountResponse>>>;
   approveAccount(
-    id: number,
+    id: string,
   ): Promise<AxiosResponse<ResponseBase<AccountResponse>>>;
   rejectAccount(
-    id: number,
+    id: string,
   ): Promise<AxiosResponse<ResponseBase<AccountResponse>>>;
   exportAccounts(params?: AccountQuery): Promise<Blob>;
   importAccounts(file: File): Promise<AxiosResponse<ResponseBase<AccountImportResult>>>;
   downloadImportTemplate(): Promise<Blob>;
   bulkApproveAccounts(
-    ids: number[],
+    ids: string[],
   ): Promise<AxiosResponse<ResponseBase<AccountResponse>>>;
   bulkRejectAccounts(
-    ids: number[],
+    ids: string[],
   ): Promise<AxiosResponse<ResponseBase<AccountResponse>>>;
   // importAccounts(file: File): Promise<void>;
 }
@@ -90,7 +90,7 @@ class AccountRepository implements IAccountRepository {
     });
   }
 
-  updateAccount(id: number, data: AccountUpdateRequest) {
+  updateAccount(id: string, data: AccountUpdateRequest) {
     return http.call<AccountResponse>({
       url: `${ACCOUNT_ENDPOINT.ACCOUNTS_APPROVE}/${id}`,
       method: "PUT",
@@ -98,28 +98,28 @@ class AccountRepository implements IAccountRepository {
     });
   }
 
-  deleteAccount(id: number) {
+  deleteAccount(id: string) {
     return http.call<AccountResponse>({
       url: `${ACCOUNT_ENDPOINT.ACCOUNTS_APPROVE}/${id}`,
       method: "DELETE",
     });
   }
 
-  lockAccount(id: number) {
+  lockAccount(id: string) {
     return http.call<AccountResponse>({
       url: `${ACCOUNT_ENDPOINT.ACCOUNTS_APPROVE}/${id}/lock`,
       method: "PUT",
     });
   }
 
-  unlockAccount(id: number) {
+  unlockAccount(id: string) {
     return http.call<AccountResponse>({
       url: `${ACCOUNT_ENDPOINT.ACCOUNTS_APPROVE}/${id}/unlock`,
       method: "PUT",
     });
   }
 
-  approveAccount(id: number) {
+  approveAccount(id: string) {
     return http.call<AccountResponse>({
       url: `${ACCOUNT_ENDPOINT.ACCOUNTS_APPROVE}/${id}/approve`,
       method: "POST",
@@ -127,7 +127,7 @@ class AccountRepository implements IAccountRepository {
     });
   }
 
-  rejectAccount(id: number) {
+  rejectAccount(id: string) {
     return http.call<AccountResponse>({
       url: `${ACCOUNT_ENDPOINT.ACCOUNTS_APPROVE}/${id}/reject`,
       method: "POST",
@@ -160,7 +160,7 @@ class AccountRepository implements IAccountRepository {
     });
   }
 
-  bulkApproveAccounts(ids: number[]) {
+  bulkApproveAccounts(ids: string[]) {
     return http.call<AccountResponse>({
       url: ACCOUNT_ENDPOINT.ACCOUNTS_BULK_APPROVE,
       method: "POST",
@@ -168,7 +168,7 @@ class AccountRepository implements IAccountRepository {
     });
   }
 
-  bulkRejectAccounts(ids: number[]) {
+  bulkRejectAccounts(ids: string[]) {
     return http.call<AccountResponse>({
       url: ACCOUNT_ENDPOINT.ACCOUNTS_BULK_REJECT,
       method: "POST",

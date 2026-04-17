@@ -46,7 +46,7 @@ export const useAccountList = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [mode, setMode] = useState<"create" | "update">("create");
   const [isEditingSelf, setIsEditingSelf] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [formValues, setFormValues] =
     useState<Record<string, unknown>>(accountInitialValues);
   const [searchValues, setSearchValues] = useState<Record<string, unknown>>(
@@ -68,7 +68,7 @@ export const useAccountList = () => {
     row: Record<string, unknown>,
     key?: string,
   ) => {
-    const id = Number(row.id);
+    const id = String(row.id);
     if (key === BTN_EDIT) {
       setMode("update");
       setSelectedId(id);

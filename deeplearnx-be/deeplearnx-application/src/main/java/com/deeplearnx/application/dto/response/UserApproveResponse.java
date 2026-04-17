@@ -3,8 +3,8 @@ package com.deeplearnx.application.dto.response;
 import java.util.List;
 
 public record UserApproveResponse(
-    Long id,
-    Long userId,
+    String id,
+    String userId,
     String username,
     String email,
     String fullName,

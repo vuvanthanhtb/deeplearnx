@@ -33,7 +33,7 @@ interface BaseTableProps {
   ) => boolean;
   colorCell?: (refColor: string[], row: TableRow) => string;
   btnGroupClassName?: string;
-  onSelectionChange?: (ids: number[]) => void;
+  onSelectionChange?: (ids: string[]) => void;
   isRowSelectable?: (row: TableRow) => boolean;
 }
 
@@ -53,7 +53,7 @@ export const BaseTableComponent: React.FC<BaseTableProps> = (props) => {
     isRowSelectable,
   } = props;
 
-  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const user = useSelector((state: RootState) => state.auth.user) ?? null;
   const dataTable = useSelector(
@@ -81,7 +81,7 @@ export const BaseTableComponent: React.FC<BaseTableProps> = (props) => {
 
   const hasCheckbox = tableConfig.some((col) => col.type === CHECKBOX);
 
-  const toggleRow = (id: number) => {
+  const toggleRow = (id: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
@@ -95,18 +95,21 @@ export const BaseTableComponent: React.FC<BaseTableProps> = (props) => {
     : content;
 
   const toggleAll = () => {
-    const selectableIds = selectableRows.map((row) => Number(row.id));
+    const selectableIds = selectableRows.map((row) => String(row.id));
     const allChecked = selectableIds.every((id) => selectedIds.has(id));
-    const next = allChecked ? new Set<number>() : new Set<number>(selectableIds);
+    const next = allChecked
+      ? new Set<string>()
+      : new Set<string>(selectableIds);
     setSelectedIds(next);
     onSelectionChange?.([...next]);
   };
 
   const allSelected =
     selectableRows.length > 0 &&
-    selectableRows.every((row) => selectedIds.has(Number(row.id)));
+    selectableRows.every((row) => selectedIds.has(String(row.id)));
   const someSelected =
-    !allSelected && selectableRows.some((row) => selectedIds.has(Number(row.id)));
+    !allSelected &&
+    selectableRows.some((row) => selectedIds.has(String(row.id)));
 
   return (
     <React.Fragment>
@@ -170,14 +173,16 @@ export const BaseTableComponent: React.FC<BaseTableProps> = (props) => {
             <tr
               key={`row-${rowIndex}`}
               className={
-                hasCheckbox && selectedIds.has(Number(row.id))
+                hasCheckbox && selectedIds.has(String(row.id))
                   ? styles["row-selected"]
                   : undefined
               }
             >
               {tableConfig.map((col, colIndex) => {
                 if (col.type === CHECKBOX) {
-                  const selectable = isRowSelectable ? isRowSelectable(row) : true;
+                  const selectable = isRowSelectable
+                    ? isRowSelectable(row)
+                    : true;
                   return (
                     <td
                       key={`cell-${colIndex}-chk`}
@@ -186,9 +191,13 @@ export const BaseTableComponent: React.FC<BaseTableProps> = (props) => {
                       <input
                         type="checkbox"
                         disabled={!selectable}
-                        checked={selectable && selectedIds.has(Number(row.id))}
-                        onChange={() => selectable && toggleRow(Number(row.id))}
-                        style={!selectable ? { cursor: "not-allowed", opacity: 0.3 } : undefined}
+                        checked={selectable && selectedIds.has(String(row.id))}
+                        onChange={() => selectable && toggleRow(String(row.id))}
+                        style={
+                          !selectable
+                            ? { cursor: "not-allowed", opacity: 0.3 }
+                            : undefined
+                        }
                       />
                     </td>
                   );

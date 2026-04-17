@@ -1,8 +1,8 @@
 package com.deeplearnx.application.dto.response;
 
 public record LessonResponse(
-    Long id,
-    Long courseId,
+    String id,
+    String courseId,
     String title,
     String slug,
     String videoUrl,

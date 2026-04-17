@@ -5,6 +5,7 @@ import com.deeplearnx.application.service.UserService;
 import com.deeplearnx.application.service.export.UserExportService;
 import com.deeplearnx.core.response.ApiResponse;
 import com.deeplearnx.core.response.PageResponse;
+import com.deeplearnx.core.utils.IdEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,10 +39,9 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ApiResponse<UserResponse>> getUser(@PathVariable Long id) {
-    return ResponseEntity.ok(ApiResponse.ok(userService.findById(id)));
+  public ResponseEntity<ApiResponse<UserResponse>> getUser(@PathVariable String id) {
+    return ResponseEntity.ok(ApiResponse.ok(userService.findById(IdEncoder.decode(id))));
   }
-
 
   @GetMapping("/export")
   public void exportUsers(

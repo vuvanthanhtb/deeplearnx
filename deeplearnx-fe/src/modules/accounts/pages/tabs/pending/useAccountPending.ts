@@ -34,7 +34,7 @@ export const useAccountPending = () => {
   const [searchValues, setSearchValues] = useState<Record<string, unknown>>(
     accountSearchInitialValues,
   );
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   useEffect(() => {
     dispatch(getPendingAccounts(buildQuery(accountSearchInitialValues)));
@@ -44,7 +44,7 @@ export const useAccountPending = () => {
     row: Record<string, unknown>,
     key?: string,
   ) => {
-    const id = Number(row.id);
+    const id = String(row.id);
     if (key === BTN_APPROVE) {
       const ok = await confirm(
         `Bạn có chắc muốn phê duyệt tài khoản "${row.username}"?`,

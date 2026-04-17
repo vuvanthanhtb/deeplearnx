@@ -25,7 +25,6 @@ import {
   buildEventsMap,
 } from "./schedule.utils";
 
-// ── Component ────────────────────────────────────────────
 const SchedulePage = () => {
   const dispatch = useAppDispatch();
   const schedules = useAppSelector((state) => state.schedule.schedules);
@@ -39,7 +38,6 @@ const SchedulePage = () => {
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
 
-  // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
   const [mode, setMode] = useState<"create" | "update">("create");
   const [selected, setSelected] = useState<ScheduleResponse | null>(null);
@@ -80,7 +78,7 @@ const SchedulePage = () => {
   };
 
   const openUpdate = (scheduleId: string) => {
-    const s = schedules.find((x) => String(x.id) === scheduleId);
+    const s = schedules.find((x) => x.id === scheduleId);
     if (!s) return;
     setMode("update");
     setSelected(s);
@@ -130,7 +128,6 @@ const SchedulePage = () => {
         </div>
       </div>
 
-      {/* ── Navigation ── */}
       <div className={styles.nav}>
         <div className={styles.navLeft}>
           <ButtonComponent
@@ -172,7 +169,6 @@ const SchedulePage = () => {
         </div>
       </div>
 
-      {/* ── Calendar ── */}
       <div className={styles.calendarContainer}>
         <div className={styles.dayHeaders}>
           {DAY_NAMES.map((d) => (
@@ -250,7 +246,6 @@ const SchedulePage = () => {
         </div>
       </div>
 
-      {/* ── Drawer Create / Update ── */}
       <BaseDrawerComponent
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}

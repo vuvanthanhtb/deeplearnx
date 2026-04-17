@@ -13,12 +13,23 @@ import type {
 import COURSES_ENDPOINT from "./courses.endpoint";
 
 interface ICoursesRepository {
-  getCourses(params?: CourseQuery): Promise<AxiosResponse<ResponseBase<CoursePage>>>;
-  createCourse(data: CourseRequest): Promise<AxiosResponse<ResponseBase<CourseResponse>>>;
-  updateCourse(id: number, data: CourseRequest): Promise<AxiosResponse<ResponseBase<CourseResponse>>>;
-  deleteCourse(id: number): Promise<AxiosResponse<ResponseBase<CourseResponse>>>;
+  getCourses(
+    params?: CourseQuery,
+  ): Promise<AxiosResponse<ResponseBase<CoursePage>>>;
+  createCourse(
+    data: CourseRequest,
+  ): Promise<AxiosResponse<ResponseBase<CourseResponse>>>;
+  updateCourse(
+    id: string,
+    data: CourseRequest,
+  ): Promise<AxiosResponse<ResponseBase<CourseResponse>>>;
+  deleteCourse(
+    id: string,
+  ): Promise<AxiosResponse<ResponseBase<CourseResponse>>>;
   exportCourses(params?: CourseQuery): Promise<Blob>;
-  importCourses(file: File): Promise<AxiosResponse<ResponseBase<CourseImportResult>>>;
+  importCourses(
+    file: File,
+  ): Promise<AxiosResponse<ResponseBase<CourseImportResult>>>;
   downloadImportTemplate(): Promise<Blob>;
 }
 
@@ -50,7 +61,7 @@ class CoursesRepository implements ICoursesRepository {
     });
   }
 
-  updateCourse(id: number, data: CourseRequest) {
+  updateCourse(id: string, data: CourseRequest) {
     return http.call<CourseResponse>({
       url: `${COURSES_ENDPOINT.COURSES}/${id}`,
       method: "PUT",
@@ -58,7 +69,7 @@ class CoursesRepository implements ICoursesRepository {
     });
   }
 
-  deleteCourse(id: number) {
+  deleteCourse(id: string) {
     return http.call<CourseResponse>({
       url: `${COURSES_ENDPOINT.COURSES}/${id}`,
       method: "DELETE",
@@ -70,7 +81,6 @@ class CoursesRepository implements ICoursesRepository {
       url: COURSES_ENDPOINT.COURSES_EXPORT,
       method: "GET",
       params,
-      filename: "BAO_CAO_DANH_SACH_KHOA_HOC.xlsx",
     });
   }
 
@@ -86,9 +96,9 @@ class CoursesRepository implements ICoursesRepository {
     return http.download({
       url: COURSES_ENDPOINT.COURSES_IMPORT_TEMPLATE,
       method: "GET",
-      filename: "course_import_template.xlsx",
     });
   }
 }
 
-export const coursesService: ICoursesRepository = CoursesRepository.getInstance();
+export const coursesService: ICoursesRepository =
+  CoursesRepository.getInstance();

@@ -39,6 +39,9 @@ superadmin:
   password: ${SUPERADMIN_PASSWORD}
   fullName: ${SUPERADMIN_FULLNAME}
 
+app:
+  id-secret: ${APP_ID_SECRET}
+
 export:
   template:
     dir: ./templates

@@ -13,7 +13,7 @@ import { coursesService } from "./courses.service";
 import { PAGE_CURRENT, PAGE_SIZE } from "@/libs/constants/table.constant";
 
 export type CourseRow = {
-  id: number;
+  id: string;
   name: string;
   slug: string;
   description: string;
@@ -98,7 +98,7 @@ export const createCourse = createAsyncThunk(
 
 export const updateCourse = createAsyncThunk(
   "courses/updateCourse",
-  async (payload: { id: number; data: CourseRequest }, thunkAPI) => {
+  async (payload: { id: string; data: CourseRequest }, thunkAPI) => {
     try {
       await coursesService.updateCourse(payload.id, payload.data);
       await thunkAPI.dispatch(getCourses(undefined));
@@ -113,7 +113,7 @@ export const updateCourse = createAsyncThunk(
 
 export const deleteCourse = createAsyncThunk(
   "courses/deleteCourse",
-  async (id: number, thunkAPI) => {
+  async (id: string, thunkAPI) => {
     try {
       await coursesService.deleteCourse(id);
       await thunkAPI.dispatch(getCourses(undefined));
