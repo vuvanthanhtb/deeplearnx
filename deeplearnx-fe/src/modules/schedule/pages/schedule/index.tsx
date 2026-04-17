@@ -1,117 +1,41 @@
-import { useEffect, useState } from "react";
 import { IconButton, Avatar } from "@mui/material";
 import BaseDrawerComponent from "@/libs/components/ui/base-drawer";
 import ButtonComponent from "@/libs/components/ui/button";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-
-import { useAppDispatch, useAppSelector } from "@/shell/redux/hooks";
-import {
-  getSchedules,
-  createSchedule,
-  updateSchedule,
-} from "../../shell/schedule.slice";
-import type { ScheduleResponse } from "../../shell/schedule.type";
+import { getSchedules } from "../../shell/schedule.slice";
 import BaseFormComponent from "@/libs/components/ui/base-form";
-import { scheduleConfig, scheduleInitialValues } from "./schedule.config";
+import { scheduleConfig } from "./schedule.config";
 import { scheduleSchema } from "./schedule.validation";
 import styles from "./schedule.module.scss";
 import { DAY_NAMES, MONTH_NAMES } from "./schedule.constants";
-import {
-  toDateKey,
-  toInputDatetime,
-  buildCalendarDays,
-  buildEventsMap,
-} from "./schedule.utils";
+import useSchedule from "./useSchedule";
+import { toDateKey } from "./schedule.utils";
 
 const SchedulePage = () => {
-  const dispatch = useAppDispatch();
-  const schedules = useAppSelector((state) => state.schedule.schedules);
-  const loading = useAppSelector((state) => state.schedule.loading);
-
-  useEffect(() => {
-    document.title = "Lịch";
-  }, []);
-
-  const today = new Date();
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [mode, setMode] = useState<"create" | "update">("create");
-  const [selected, setSelected] = useState<ScheduleResponse | null>(null);
-  const [formValues, setFormValues] = useState<Record<string, unknown>>(
-    scheduleInitialValues,
-  );
-
-  useEffect(() => {
-    dispatch(getSchedules());
-  }, [dispatch]);
-
-  const days = buildCalendarDays(currentYear, currentMonth);
-
-  const eventsMap = buildEventsMap(schedules);
-
-  const goPrev = () => {
-    if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear((y) => y - 1);
-    } else setCurrentMonth((m) => m - 1);
-  };
-  const goNext = () => {
-    if (currentMonth === 11) {
-      setCurrentMonth(0);
-      setCurrentYear((y) => y + 1);
-    } else setCurrentMonth((m) => m + 1);
-  };
-  const goToday = () => {
-    setCurrentYear(today.getFullYear());
-    setCurrentMonth(today.getMonth());
-  };
-
-  const openCreate = () => {
-    setMode("create");
-    setSelected(null);
-    setFormValues(scheduleInitialValues);
-    setDialogOpen(true);
-  };
-
-  const openUpdate = (scheduleId: string) => {
-    const s = schedules.find((x) => x.id === scheduleId);
-    if (!s) return;
-    setMode("update");
-    setSelected(s);
-    setFormValues({
-      title: s.title,
-      scheduledAt: toInputDatetime(s.scheduledAt),
-      content: s.content,
-    });
-    setDialogOpen(true);
-  };
-
-  const handleSubmit = async (data: Record<string, unknown>) => {
-    const payload = {
-      title: String(data.title ?? ""),
-      scheduledAt: String(data.scheduledAt ?? ""),
-      content: String(data.content ?? ""),
-    };
-
-    let result;
-    if (mode === "create") {
-      result = await dispatch(createSchedule(payload));
-      if (createSchedule.fulfilled.match(result)) setDialogOpen(false);
-    } else if (selected) {
-      result = await dispatch(
-        updateSchedule({ id: selected.id, data: payload }),
-      );
-      if (updateSchedule.fulfilled.match(result)) setDialogOpen(false);
-    }
-  };
+  const {
+    loading,
+    currentMonth,
+    currentYear,
+    days,
+    eventsMap,
+    goPrev,
+    goNext,
+    goToday,
+    openCreate,
+    openUpdate,
+    dialogOpen,
+    setDialogOpen,
+    mode,
+    formValues,
+    setFormValues,
+    handleSubmit,
+    dispatch,
+  } = useSchedule();
 
   return (
     <div className={styles.wrapper}>
-      {/* ── Header ── */}
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <CalendarMonthIcon sx={{ color: "#1a73e8", fontSize: 28 }} />
@@ -121,7 +45,7 @@ const SchedulePage = () => {
         <div className={styles.headerActions}>
           <ButtonComponent
             type="button"
-            title="+ Tạo lịch"
+            title="Tạo lịch"
             action="create"
             onClick={openCreate}
           />
@@ -249,7 +173,7 @@ const SchedulePage = () => {
       <BaseDrawerComponent
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        title={mode === "create" ? "Tạo lịch mới" : "Cập nhật lịch"}
+        title={mode}
       >
         <BaseFormComponent
           formConfig={scheduleConfig}

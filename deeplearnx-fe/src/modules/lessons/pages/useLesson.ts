@@ -52,12 +52,11 @@ const useLesson = () => {
     [lessons],
   );
 
-  // Auto-select first lesson
   useEffect(() => {
     if (courseLessons.length > 0 && !activeLesson) {
       setActiveLesson(courseLessons[0]);
     }
-  }, [courseLessons]);
+  }, [courseLessons, activeLesson]);
 
   const handleImportClick = () => importInputRef.current?.click();
 

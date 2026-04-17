@@ -18,7 +18,6 @@ import clsx from "clsx";
 
 const LessonListPage = () => {
   const navigate = useNavigate();
-
   const {
     isAdmin,
     courseSlug,
@@ -94,7 +93,7 @@ const LessonListPage = () => {
             />
             <ButtonComponent
               type="button"
-              title="+ Tạo bài học"
+              title="Tạo bài học"
               action="create"
               onClick={openCreate}
             />

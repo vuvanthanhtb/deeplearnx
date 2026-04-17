@@ -82,7 +82,7 @@ const AccountListTab = () => {
             />
             <ButtonComponent
               type="button"
-              title="+ Tạo tài khoản"
+              title="Tạo tài khoản"
               action={BTN_CREATE}
               onClick={openCreate}
             />
