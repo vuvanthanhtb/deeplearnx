@@ -1,8 +1,10 @@
 package com.deeplearnx.application.dto.response;
 
+import com.deeplearnx.core.annotation.EncodedId;
+
 public record LessonResponse(
-    String id,
-    String courseId,
+    @EncodedId Long id,
+    @EncodedId Long courseId,
     String title,
     String slug,
     String videoUrl,

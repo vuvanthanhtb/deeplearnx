@@ -1,10 +1,11 @@
 package com.deeplearnx.application.dto.response;
 
+import com.deeplearnx.core.annotation.EncodedId;
 import java.util.List;
 
 public record UserApproveResponse(
-    String id,
-    String userId,
+    @EncodedId Long id,
+    @EncodedId Long userId,
     String username,
     String email,
     String fullName,

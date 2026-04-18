@@ -1,15 +1,13 @@
 package com.deeplearnx.application.mapper;
 
 import com.deeplearnx.application.dto.response.LessonResponse;
-import com.deeplearnx.core.utils.IdEncoder;
 import com.deeplearnx.domain.entity.Lesson;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", imports = IdEncoder.class)
+@Mapper(componentModel = "spring")
 public interface LessonMapper {
 
-  @Mapping(target = "id", expression = "java(IdEncoder.encode(lesson.getId()))")
-  @Mapping(target = "courseId", expression = "java(IdEncoder.encode(lesson.getCourse().getId()))")
+  @Mapping(target = "courseId", source = "course.id")
   LessonResponse toResponse(Lesson lesson);
 }

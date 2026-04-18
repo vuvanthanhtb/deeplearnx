@@ -5,13 +5,12 @@ import com.deeplearnx.application.dto.request.UpdateUserRequest;
 import com.deeplearnx.application.dto.response.BulkActionResult;
 import com.deeplearnx.application.dto.response.UserApproveResponse;
 import com.deeplearnx.application.dto.response.UserImportResult;
-import java.util.List;
 import com.deeplearnx.application.service.UserApproveService;
 import com.deeplearnx.application.service.UserImportService;
 import com.deeplearnx.core.annotation.EncodedId;
 import com.deeplearnx.core.response.ApiResponse;
 import com.deeplearnx.core.response.PageResponse;
-import com.deeplearnx.core.utils.IdEncoder;
+import com.deeplearnx.core.web.EncodedIdList;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -95,14 +94,12 @@ public class UserApproveController {
   }
 
   @PostMapping("/bulk-approve")
-  public ResponseEntity<ApiResponse<BulkActionResult>> bulkApprove(@RequestBody List<String> encodedIds) {
-    List<Long> ids = encodedIds.stream().map(IdEncoder::decode).toList();
+  public ResponseEntity<ApiResponse<BulkActionResult>> bulkApprove(@RequestBody EncodedIdList ids) {
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.bulkApprove(ids)));
   }
 
   @PostMapping("/bulk-reject")
-  public ResponseEntity<ApiResponse<BulkActionResult>> bulkReject(@RequestBody List<String> encodedIds) {
-    List<Long> ids = encodedIds.stream().map(IdEncoder::decode).toList();
+  public ResponseEntity<ApiResponse<BulkActionResult>> bulkReject(@RequestBody EncodedIdList ids) {
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.bulkReject(ids)));
   }
 
