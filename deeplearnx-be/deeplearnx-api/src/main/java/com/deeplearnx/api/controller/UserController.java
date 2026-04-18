@@ -3,13 +3,12 @@ package com.deeplearnx.api.controller;
 import com.deeplearnx.application.dto.response.UserResponse;
 import com.deeplearnx.application.service.UserService;
 import com.deeplearnx.application.service.export.UserExportService;
+import com.deeplearnx.core.annotation.EncodedId;
 import com.deeplearnx.core.response.ApiResponse;
 import com.deeplearnx.core.response.PageResponse;
-import com.deeplearnx.core.utils.IdEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,8 +38,8 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ApiResponse<UserResponse>> getUser(@PathVariable String id) {
-    return ResponseEntity.ok(ApiResponse.ok(userService.findById(IdEncoder.decode(id))));
+  public ResponseEntity<ApiResponse<UserResponse>> getUser(@EncodedId Long id) {
+    return ResponseEntity.ok(ApiResponse.ok(userService.findById(id)));
   }
 
   @GetMapping("/export")

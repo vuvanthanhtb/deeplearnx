@@ -10,12 +10,7 @@ import {
   statusUserOptions,
 } from "@/libs/constants/options.constant";
 import { SUPERADMIN, ADMIN } from "@/libs/constants/roles.constant";
-import { buildAccountTableConfig, getAccountUpdateConfig } from "./account-list.config";
-import {
-  buildAccountSearchConfig,
-  accountSearchInitialValues,
-  buildQuery,
-} from "../../account-search.config";
+import { buildAccountTableConfig, getAccountUpdateConfig } from "../config";
 import {
   createAccount,
   deleteAccount,
@@ -26,14 +21,15 @@ import {
   lockAccount,
   unlockAccount,
   updateAccount,
-} from "../../../shell/account.slice";
-import { accountInitialValues } from "./account-list.config";
+} from "../../../../shell/account.slice";
+import { accountInitialValues } from "../config";
 import {
   BTN_DELETE,
   BTN_EDIT,
   BTN_LOCK,
   BTN_UNLOCK,
 } from "@/libs/constants/button.constant";
+import { AccountSearchConfig } from "../../../config";
 
 export const useAccountList = () => {
   const dispatch = useAppDispatch();
@@ -50,11 +46,17 @@ export const useAccountList = () => {
   const [formValues, setFormValues] =
     useState<Record<string, unknown>>(accountInitialValues);
   const [searchValues, setSearchValues] = useState<Record<string, unknown>>(
-    accountSearchInitialValues,
+    AccountSearchConfig.accountSearchInitialValues,
   );
 
   useEffect(() => {
-    dispatch(getAccounts(buildQuery(accountSearchInitialValues)));
+    dispatch(
+      getAccounts(
+        AccountSearchConfig.buildQuery(
+          AccountSearchConfig.accountSearchInitialValues,
+        ),
+      ),
+    );
   }, [dispatch]);
 
   const openCreate = () => {
@@ -91,7 +93,7 @@ export const useAccountList = () => {
       );
       if (!ok) return;
       dispatch(deleteAccount(id)).then(() =>
-        dispatch(getAccounts(buildQuery(searchValues))),
+        dispatch(getAccounts(AccountSearchConfig.buildQuery(searchValues))),
       );
     } else if (key === BTN_LOCK) {
       const ok = await confirm(
@@ -100,7 +102,7 @@ export const useAccountList = () => {
       );
       if (!ok) return;
       dispatch(lockAccount(id)).then(() =>
-        dispatch(getAccounts(buildQuery(searchValues))),
+        dispatch(getAccounts(AccountSearchConfig.buildQuery(searchValues))),
       );
     } else if (key === BTN_UNLOCK) {
       const ok = await confirm(
@@ -109,25 +111,31 @@ export const useAccountList = () => {
       );
       if (!ok) return;
       dispatch(unlockAccount(id)).then(() =>
-        dispatch(getAccounts(buildQuery(searchValues))),
+        dispatch(getAccounts(AccountSearchConfig.buildQuery(searchValues))),
       );
     }
   };
 
   const handleSearch = (data: Record<string, unknown>) => {
     const query = { ...data, page: PAGE_CURRENT, size: PAGE_SIZE };
-    dispatch(getAccounts(buildQuery(query)));
+    dispatch(getAccounts(AccountSearchConfig.buildQuery(query)));
     setSearchValues(query);
   };
 
   const handleExport = async (data: Record<string, unknown>) => {
-    await dispatch(exportAccounts(buildQuery(data, true)));
+    await dispatch(exportAccounts(AccountSearchConfig.buildQuery(data, true)));
     return false;
   };
 
   const handleRefresh = () => {
-    dispatch(getAccounts(buildQuery(accountSearchInitialValues)));
-    setSearchValues(accountSearchInitialValues);
+    dispatch(
+      getAccounts(
+        AccountSearchConfig.buildQuery(
+          AccountSearchConfig.accountSearchInitialValues,
+        ),
+      ),
+    );
+    setSearchValues(AccountSearchConfig.accountSearchInitialValues);
     return false;
   };
 
@@ -147,15 +155,19 @@ export const useAccountList = () => {
   };
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
-    dispatch(getAccounts(buildQuery({ ...searchValues, page })));
+    dispatch(
+      getAccounts(AccountSearchConfig.buildQuery({ ...searchValues, page })),
+    );
     setSearchValues((prev) => ({ ...prev, page }));
   };
 
   const handleSubmit = async (data: Record<string, unknown>) => {
     let result;
     const toRoles = (val: unknown): string[] => {
-      if (Array.isArray(val)) return val.map((o: any) => o.value).filter(Boolean);
-      if (val && typeof val === "object" && "value" in (val as object)) return [(val as any).value];
+      if (Array.isArray(val))
+        return val.map((o: any) => o.value).filter(Boolean);
+      if (val && typeof val === "object" && "value" in (val as object))
+        return [(val as any).value];
       return [];
     };
 
@@ -179,7 +191,7 @@ export const useAccountList = () => {
       result = await dispatch(updateAccount({ id: selectedId, data: payload }));
       if (updateAccount.fulfilled.match(result)) setDrawerOpen(false);
     }
-    await dispatch(getAccounts(buildQuery(searchValues)));
+    await dispatch(getAccounts(AccountSearchConfig.buildQuery(searchValues)));
   };
 
   const tableConfig = useMemo(() => buildAccountTableConfig(roles), [roles]);
@@ -191,7 +203,7 @@ export const useAccountList = () => {
   const isAdmin = [SUPERADMIN, ADMIN].some((r) => roles.includes(r));
 
   const accountSearchConfig = useMemo(
-    () => buildAccountSearchConfig(isAdmin),
+    () => AccountSearchConfig.buildAccountSearchConfig(isAdmin),
     [isAdmin],
   );
 

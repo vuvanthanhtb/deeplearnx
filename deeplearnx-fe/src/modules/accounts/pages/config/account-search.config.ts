@@ -3,7 +3,7 @@ import { defaultSelectOption } from "@/libs/constants/options.constant";
 import { PAGE_CURRENT, PAGE_SIZE } from "@/libs/constants/table.constant";
 import type { IBaseFormConfig } from "@/libs/types/config-form.type";
 import { getDateFromNow, toDateKey } from "@/libs/utils/date.utils";
-import type { AccountQuery } from "../shell/account.type";
+import type { AccountQuery } from "../../shell/account.type";
 import {
   BTN_EXPORT,
   BTN_REFRESH,
@@ -101,7 +101,9 @@ const accountSearchConfig: IBaseFormConfig = {
   ],
 };
 
-export const buildAccountSearchConfig = (isAdmin: boolean): IBaseFormConfig => ({
+export const buildAccountSearchConfig = (
+  isAdmin: boolean,
+): IBaseFormConfig => ({
   ...accountSearchConfig,
   fields: accountSearchConfig.fields.map((f) => {
     if (f.type !== BUTTON) return f;

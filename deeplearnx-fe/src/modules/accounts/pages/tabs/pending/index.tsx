@@ -1,10 +1,10 @@
 import BaseFormComponent from "@/libs/components/ui/base-form";
 import BaseTableComponent from "@/libs/components/ui/base-table";
 import ButtonComponent from "@/libs/components/ui/button";
-import { colorCell } from "../../account-table.config";
-import styles from "../../account.module.scss";
-import { useAccountPending } from "./useAccountPending";
-import { showButtons } from "./account-pending.config";
+import { colorCell } from "../../config/account-table.config";
+import styles from "./account-pending.module.scss";
+import { useAccountPending } from "./hook";
+import { showButtons } from "./config";
 import {
   BTN_APPROVE,
   BTN_REJECT,

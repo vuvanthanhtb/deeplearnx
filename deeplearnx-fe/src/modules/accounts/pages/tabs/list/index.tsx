@@ -2,11 +2,10 @@ import BaseDrawerComponent from "@/libs/components/ui/base-drawer";
 import BaseFormComponent from "@/libs/components/ui/base-form";
 import BaseTableComponent from "@/libs/components/ui/base-table";
 import ButtonComponent from "@/libs/components/ui/button";
-import { colorCell } from "../../account-table.config";
-import { accountConfig, showButtons } from "./account-list.config";
-import { accountSchema, accountUpdateSchema } from "./account-list.validation";
-import styles from "../../account.module.scss";
-import { useAccountList } from "./useAccountList";
+import { accountConfig, showButtons } from "./config";
+import { accountSchema, accountUpdateSchema } from "./validation";
+import styles from "./account-list.module.scss";
+import { useAccountList } from "./hook";
 import {
   BTN_CLOSE,
   BTN_CREATE,
@@ -15,6 +14,7 @@ import {
   BTN_SEARCH,
   BTN_SUBMIT,
 } from "@/libs/constants/button.constant";
+import { AccountTableConfig } from "../../config";
 
 const AccountListTab = () => {
   const {
@@ -112,7 +112,7 @@ const AccountListTab = () => {
           handleCellAction={handleCellAction}
           handlePageChange={handlePageChange}
           showButton={showButtons}
-          colorCell={colorCell}
+          colorCell={AccountTableConfig.colorCell}
         />
       </div>
 

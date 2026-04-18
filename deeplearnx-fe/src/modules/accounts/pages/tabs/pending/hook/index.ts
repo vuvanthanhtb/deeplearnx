@@ -10,12 +10,12 @@ import {
   statusUserApproveOptions,
 } from "@/libs/constants/options.constant";
 import { SUPERADMIN, ADMIN } from "@/libs/constants/roles.constant";
-import { buildPendingTableConfig } from "./account-pending.config";
+import { buildPendingTableConfig } from "../config";
 import {
   buildAccountSearchConfig,
   accountSearchInitialValues,
   buildQuery,
-} from "../../account-search.config";
+} from "../../../config/account-search.config";
 import {
   approveAccount,
   bulkApproveAccounts,
@@ -23,7 +23,7 @@ import {
   getAccounts,
   getPendingAccounts,
   rejectAccount,
-} from "../../../shell/account.slice";
+} from "../../../../shell/account.slice";
 import { BTN_APPROVE, BTN_REJECT } from "@/libs/constants/button.constant";
 
 export const useAccountPending = () => {

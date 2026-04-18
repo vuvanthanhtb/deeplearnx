@@ -1,0 +1,45 @@
+.searchBar {
+  padding: 12px 24px;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.bulkToolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 24px;
+  background: #e8f0fe;
+  border-bottom: 1px solid #c5d8f8;
+}
+
+
+.bulkCount {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a73e8;
+  margin-right: 8px;
+}
+
+.tableWrapper {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+}
+
+@media (max-width: 768px) {
+  .searchBar {
+    padding: 10px 16px;
+  }
+
+  .bulkToolbar {
+    padding: 8px 16px;
+    flex-wrap: wrap;
+  }
+
+  .tableWrapper {
+    flex: none;
+    overflow: visible;
+    padding: 12px;
+  }
+}

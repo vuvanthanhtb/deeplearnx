@@ -1,0 +1,39 @@
+.tabToolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 24px;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.searchBar {
+  padding: 12px 24px;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tableWrapper {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+}
+
+@media (max-width: 768px) {
+  .searchBar {
+    padding: 10px 16px;
+  }
+
+  .tableWrapper {
+    flex: none;
+    overflow: visible;
+    padding: 12px;
+  }
+
+}
