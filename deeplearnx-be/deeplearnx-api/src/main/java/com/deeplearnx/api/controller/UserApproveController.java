@@ -7,18 +7,18 @@ import com.deeplearnx.application.dto.response.UserApproveResponse;
 import com.deeplearnx.application.dto.response.UserImportResult;
 import com.deeplearnx.application.service.UserApproveService;
 import com.deeplearnx.application.service.UserImportService;
-import com.deeplearnx.core.annotation.EncodedId;
 import com.deeplearnx.core.response.ApiResponse;
 import com.deeplearnx.core.response.PageResponse;
-import com.deeplearnx.core.web.EncodedIdList;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,23 +44,23 @@ public class UserApproveController {
 
   @PutMapping("/{id}")
   public ResponseEntity<ApiResponse<UserApproveResponse>> updateUser(
-      @EncodedId Long id,
+      @PathVariable Long id,
       @RequestBody UpdateUserRequest request) {
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.update(id, request)));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<ApiResponse<UserApproveResponse>> deleteUser(@EncodedId Long id) {
+  public ResponseEntity<ApiResponse<UserApproveResponse>> deleteUser(@PathVariable Long id) {
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.delete(id)));
   }
 
   @PostMapping("/{id}/lock")
-  public ResponseEntity<ApiResponse<UserApproveResponse>> lockUser(@EncodedId Long id) {
+  public ResponseEntity<ApiResponse<UserApproveResponse>> lockUser(@PathVariable Long id) {
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.lock(id)));
   }
 
   @PostMapping("/{id}/unlock")
-  public ResponseEntity<ApiResponse<UserApproveResponse>> unlockUser(@EncodedId Long id) {
+  public ResponseEntity<ApiResponse<UserApproveResponse>> unlockUser(@PathVariable Long id) {
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.unlock(id)));
   }
 
@@ -79,27 +79,27 @@ public class UserApproveController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ApiResponse<UserApproveResponse>> getApproval(@EncodedId Long id) {
+  public ResponseEntity<ApiResponse<UserApproveResponse>> getApproval(@PathVariable Long id) {
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.findById(id)));
   }
 
   @PostMapping("/{id}/approve")
-  public ResponseEntity<ApiResponse<UserApproveResponse>> approve(@EncodedId Long id) {
+  public ResponseEntity<ApiResponse<UserApproveResponse>> approve(@PathVariable Long id) {
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.approve(id)));
   }
 
   @PostMapping("/{id}/reject")
-  public ResponseEntity<ApiResponse<UserApproveResponse>> reject(@EncodedId Long id) {
+  public ResponseEntity<ApiResponse<UserApproveResponse>> reject(@PathVariable Long id) {
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.reject(id)));
   }
 
   @PostMapping("/bulk-approve")
-  public ResponseEntity<ApiResponse<BulkActionResult>> bulkApprove(@RequestBody EncodedIdList ids) {
+  public ResponseEntity<ApiResponse<BulkActionResult>> bulkApprove(@RequestBody List<Long> ids) {
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.bulkApprove(ids)));
   }
 
   @PostMapping("/bulk-reject")
-  public ResponseEntity<ApiResponse<BulkActionResult>> bulkReject(@RequestBody EncodedIdList ids) {
+  public ResponseEntity<ApiResponse<BulkActionResult>> bulkReject(@RequestBody List<Long> ids) {
     return ResponseEntity.ok(ApiResponse.ok(userApproveService.bulkReject(ids)));
   }
 

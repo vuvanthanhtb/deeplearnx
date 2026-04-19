@@ -1,10 +1,9 @@
 package com.deeplearnx.application.dto.response;
 
-import com.deeplearnx.core.annotation.EncodedId;
 import java.util.List;
 
 public record UserResponse(
-    @EncodedId Long id,
+    Long id,
     String username,
     String email,
     String fullName,

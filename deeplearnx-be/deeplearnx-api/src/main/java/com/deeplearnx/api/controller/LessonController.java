@@ -6,7 +6,6 @@ import com.deeplearnx.application.dto.response.LessonImportResult;
 import com.deeplearnx.application.dto.response.LessonResponse;
 import com.deeplearnx.application.service.LessonImportService;
 import com.deeplearnx.application.service.LessonService;
-import com.deeplearnx.core.annotation.EncodedId;
 import com.deeplearnx.core.response.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -44,19 +43,19 @@ public class LessonController {
   }
 
   @GetMapping("/api/lessons/{id}")
-  public ResponseEntity<ApiResponse<LessonResponse>> getLesson(@EncodedId Long id) {
+  public ResponseEntity<ApiResponse<LessonResponse>> getLesson(@PathVariable Long id) {
     return ResponseEntity.ok(ApiResponse.ok(lessonService.findById(id)));
   }
 
   @PutMapping("/api/lessons/{id}")
   public ResponseEntity<ApiResponse<LessonResponse>> updateLesson(
-      @EncodedId Long id,
+      @PathVariable Long id,
       @RequestBody UpdateLessonRequest request) {
     return ResponseEntity.ok(ApiResponse.ok(lessonService.update(id, request)));
   }
 
   @DeleteMapping("/api/lessons/{id}")
-  public ResponseEntity<ApiResponse<Void>> deleteLesson(@EncodedId Long id) {
+  public ResponseEntity<ApiResponse<Void>> deleteLesson(@PathVariable Long id) {
     lessonService.delete(id);
     return ResponseEntity.ok(ApiResponse.ok(null));
   }

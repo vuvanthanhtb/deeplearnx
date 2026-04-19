@@ -4,7 +4,6 @@ import com.deeplearnx.application.dto.request.CreateScheduleRequest;
 import com.deeplearnx.application.dto.request.UpdateScheduleRequest;
 import com.deeplearnx.application.dto.response.ScheduleResponse;
 import com.deeplearnx.application.service.ScheduleService;
-import com.deeplearnx.core.annotation.EncodedId;
 import com.deeplearnx.core.response.ApiResponse;
 import com.deeplearnx.domain.entity.ScheduleStatus;
 import com.deeplearnx.domain.entity.User;
@@ -18,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,14 +50,14 @@ public class ScheduleController {
 
   @GetMapping("/{id}")
   public ResponseEntity<ApiResponse<ScheduleResponse>> findById(
-      @EncodedId Long id,
+      @PathVariable Long id,
       @AuthenticationPrincipal User currentUser) {
     return ResponseEntity.ok(ApiResponse.ok(scheduleService.findById(id, currentUser)));
   }
 
   @PutMapping("/{id}")
   public ResponseEntity<ApiResponse<ScheduleResponse>> update(
-      @EncodedId Long id,
+      @PathVariable Long id,
       @RequestBody UpdateScheduleRequest request,
       @AuthenticationPrincipal User currentUser) {
     return ResponseEntity.ok(ApiResponse.ok(scheduleService.update(id, request, currentUser)));
@@ -65,7 +65,7 @@ public class ScheduleController {
 
   @PatchMapping("/{id}/status")
   public ResponseEntity<ApiResponse<ScheduleResponse>> updateStatus(
-      @EncodedId Long id,
+      @PathVariable Long id,
       @RequestParam ScheduleStatus status,
       @AuthenticationPrincipal User currentUser) {
     return ResponseEntity.ok(ApiResponse.ok(scheduleService.updateStatus(id, status, currentUser)));
@@ -73,7 +73,7 @@ public class ScheduleController {
 
   @DeleteMapping("/{id}")
   public ResponseEntity<ApiResponse<Void>> delete(
-      @EncodedId Long id,
+      @PathVariable Long id,
       @AuthenticationPrincipal User currentUser) {
     scheduleService.delete(id, currentUser);
     return ResponseEntity.ok(ApiResponse.ok("Schedule deleted"));

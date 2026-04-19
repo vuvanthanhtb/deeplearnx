@@ -42,7 +42,6 @@ public class AuthServiceImpl implements AuthService {
   private final UserRepository userRepository;
   private final UserApproveRepository userApproveRepository;
   private final PasswordEncoder passwordEncoder;
-  private final ObjectMapper objectMapper;
   private final RefreshTokenService refreshTokenService;
   private final UserMapper userMapper;
 
@@ -67,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
     UserApprove approve = new UserApprove();
     approve.setAction(UserApproveAction.REGISTER);
     approve.setStatus(UserApproveStatus.APPROVING);
-    approve.setPayload(toJson(encodedRequest));
+//    approve.setPayload(toJson(encodedRequest));
     approve.setUsername(request.username());
     approve.setEmail(request.email());
     approve.setFullName(request.fullName());
@@ -137,13 +136,5 @@ public class AuthServiceImpl implements AuthService {
         jwtService.generateToken(user),
         refreshTokenService.create(user)
     );
-  }
-
-  private String toJson(Object obj) {
-    try {
-      return objectMapper.writeValueAsString(obj);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException("Failed to serialize payload", e);
-    }
   }
 }

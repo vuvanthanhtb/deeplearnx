@@ -7,7 +7,6 @@ import com.deeplearnx.application.dto.response.CourseResponse;
 import com.deeplearnx.application.service.CourseImportService;
 import com.deeplearnx.application.service.export.CourseExportService;
 import com.deeplearnx.application.service.CourseService;
-import com.deeplearnx.core.annotation.EncodedId;
 import com.deeplearnx.core.response.ApiResponse;
 import com.deeplearnx.core.response.PageResponse;
 import com.deeplearnx.domain.entity.User;
@@ -48,7 +47,7 @@ public class CourseController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ApiResponse<CourseResponse>> getCourse(@EncodedId Long id) {
+  public ResponseEntity<ApiResponse<CourseResponse>> getCourse(@PathVariable Long id) {
     return ResponseEntity.ok(ApiResponse.ok(courseService.findById(id)));
   }
 
@@ -67,13 +66,13 @@ public class CourseController {
 
   @PutMapping("/{id}")
   public ResponseEntity<ApiResponse<CourseResponse>> updateCourse(
-      @EncodedId Long id,
+      @PathVariable Long id,
       @RequestBody UpdateCourseRequest request) {
     return ResponseEntity.ok(ApiResponse.ok(courseService.update(id, request)));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<ApiResponse<Void>> deleteCourse(@EncodedId Long id) {
+  public ResponseEntity<ApiResponse<Void>> deleteCourse(@PathVariable Long id) {
     courseService.delete(id);
     return ResponseEntity.ok(ApiResponse.ok(null));
   }

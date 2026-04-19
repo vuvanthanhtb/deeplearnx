@@ -46,7 +46,6 @@ public class UserApproveServiceImpl implements UserApproveService {
   private final UserApproveQueryRepository userApproveQueryRepository;
   private final UserRepository userRepository;
   private final UserApproveMapper userApproveMapper;
-  private final ObjectMapper objectMapper;
   private final PasswordEncoder passwordEncoder;
 
   @Override
@@ -82,7 +81,7 @@ public class UserApproveServiceImpl implements UserApproveService {
         request.fullName(),
         request.roles()
     );
-    UserApprove approve = buildApprove(null, UserApproveAction.CREATE, toJson(encodedRequest));
+    UserApprove approve = buildApprove(null, UserApproveAction.CREATE, null);
     approve.setUsername(request.username());
     approve.setEmail(request.email());
     approve.setFullName(request.fullName());
@@ -98,7 +97,7 @@ public class UserApproveServiceImpl implements UserApproveService {
     checkAdminNotPrivilegedTarget(user);
     UpdateUserRequest sanitized = isPrivilegedCurrentUser() ? request
         : new UpdateUserRequest(request.fullName(), request.email(), null);
-    UserApprove approve = buildApproveForUser(id, user, UserApproveAction.UPDATE, toJson(sanitized));
+    UserApprove approve = buildApproveForUser(id, user, UserApproveAction.UPDATE, null);
     return saveAndFetch(approve);
   }
 
@@ -200,9 +199,9 @@ public class UserApproveServiceImpl implements UserApproveService {
 
   private void applyRegister(UserApprove approve) {
     try {
-      RegisterRequest request = objectMapper.readValue(approve.getPayload(), RegisterRequest.class);
-      saveNewUser(request.username(), request.email(), request.password(), request.fullName(),
-          List.of(Role.USER));
+//      RegisterRequest request = objectMapper.readValue(approve.getPayload(), RegisterRequest.class);
+//      saveNewUser(request.username(), request.email(), request.password(), request.fullName(),
+//          List.of(Role.USER));
     } catch (Exception e) {
       throw new BadRequestException("Failed to apply register: " + e.getMessage());
     }
@@ -210,10 +209,10 @@ public class UserApproveServiceImpl implements UserApproveService {
 
   private void applyCreate(UserApprove approve) {
     try {
-      CreateUserRequest request = objectMapper.readValue(approve.getPayload(),
-          CreateUserRequest.class);
-      saveNewUser(request.username(), request.email(), request.password(), request.fullName(),
-          request.roles() != null ? request.roles() : List.of());
+//      CreateUserRequest request = objectMapper.readValue(approve.getPayload(),
+//          CreateUserRequest.class);
+//      saveNewUser(request.username(), request.email(), request.password(), request.fullName(),
+//          request.roles() != null ? request.roles() : List.of());
     } catch (Exception e) {
       throw new BadRequestException("Failed to apply create: " + e.getMessage());
     }
@@ -234,17 +233,17 @@ public class UserApproveServiceImpl implements UserApproveService {
   private void applyUpdate(UserApprove approve) {
     User user = getUser(approve.getUserId());
     try {
-      UpdateUserRequest request = objectMapper.readValue(approve.getPayload(),
-          UpdateUserRequest.class);
-      if (StringUtils.hasText(request.email())) {
-        user.setEmail(request.email());
-      }
-      if (StringUtils.hasText(request.fullName())) {
-        user.setFullName(request.fullName());
-      }
-      if (request.roles() != null) {
-        user.setRoles(request.roles());
-      }
+//      UpdateUserRequest request = objectMapper.readValue(approve.getPayload(),
+//          UpdateUserRequest.class);
+//      if (StringUtils.hasText(request.email())) {
+//        user.setEmail(request.email());
+//      }
+//      if (StringUtils.hasText(request.fullName())) {
+//        user.setFullName(request.fullName());
+//      }
+//      if (request.roles() != null) {
+//        user.setRoles(request.roles());
+//      }
       userRepository.save(user);
     } catch (Exception e) {
       throw new BadRequestException("Failed to apply update: " + e.getMessage());
@@ -347,13 +346,5 @@ public class UserApproveServiceImpl implements UserApproveService {
   private UserApprove getApprove(Long id) {
     return userApproveRepository.findById(id)
         .orElseThrow(() -> new NotFoundException("User approval request not found"));
-  }
-
-  private String toJson(Object obj) {
-    try {
-      return objectMapper.writeValueAsString(obj);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException("Failed to serialize payload", e);
-    }
   }
 }
