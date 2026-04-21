@@ -3,8 +3,9 @@ package com.deeplearnx.api.controller;
 import com.deeplearnx.application.dto.request.CreateUserRequest;
 import com.deeplearnx.application.dto.request.UpdateUserRequest;
 import com.deeplearnx.application.dto.response.BulkActionResult;
+import com.deeplearnx.application.dto.response.ImportResult;
 import com.deeplearnx.application.dto.response.UserApproveResponse;
-import com.deeplearnx.application.dto.response.UserImportResult;
+import com.deeplearnx.application.dto.response.UserImportRowResult;
 import com.deeplearnx.application.service.UserApproveService;
 import com.deeplearnx.application.service.UserImportService;
 import com.deeplearnx.core.response.ApiResponse;
@@ -94,17 +95,19 @@ public class UserApproveController {
   }
 
   @PostMapping("/bulk-approve")
-  public ResponseEntity<ApiResponse<BulkActionResult>> bulkApprove(@RequestBody List<Long> ids) {
-    return ResponseEntity.ok(ApiResponse.ok(userApproveService.bulkApprove(ids)));
+  public ResponseEntity<ApiResponse<BulkActionResult>> bulkApprove(@RequestBody List<String> ids) {
+    return ResponseEntity.ok(ApiResponse.ok(
+        userApproveService.bulkApprove(ids)));
   }
 
   @PostMapping("/bulk-reject")
-  public ResponseEntity<ApiResponse<BulkActionResult>> bulkReject(@RequestBody List<Long> ids) {
-    return ResponseEntity.ok(ApiResponse.ok(userApproveService.bulkReject(ids)));
+  public ResponseEntity<ApiResponse<BulkActionResult>> bulkReject(@RequestBody List<String> ids) {
+    return ResponseEntity.ok(ApiResponse.ok(
+        userApproveService.bulkReject(ids)));
   }
 
   @PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<ApiResponse<UserImportResult>> importUsers(
+  public ResponseEntity<ApiResponse<ImportResult<UserImportRowResult>>> importUsers(
       @RequestParam("file") MultipartFile file) {
     return ResponseEntity.ok(ApiResponse.ok(userImportService.importUsers(file)));
   }

@@ -8,6 +8,5 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface LessonMapper {
 
-  @Mapping(target = "courseId", source = "course.id")
   LessonResponse toResponse(Lesson lesson);
 }

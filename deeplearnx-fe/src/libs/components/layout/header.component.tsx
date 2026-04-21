@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Avatar,
   Box,
+  Chip,
   Divider,
   IconButton,
   ListItemIcon,
@@ -18,13 +19,24 @@ import AvatarUser from "@/assets/avatar.jpeg";
 import { useAppDispatch, useAppSelector } from "@/shell/redux/hooks";
 import { logoutUser } from "@/modules/auth/shell/auth.slice";
 import { AUTH_PATH } from "@/modules/auth/shell/auth.route";
+import { SUPERADMIN, ADMIN, APPROVER } from "@/libs/constants/roles.constant";
 import BaseDrawerComponent from "../ui/base-drawer";
 import ProfileComponent from "./profile";
+
+const ROLE_LABEL: Record<string, { label: string; color: "error" | "warning" | "info" | "default" }> = {
+  [SUPERADMIN]: { label: "Super Admin", color: "error" },
+  [ADMIN]: { label: "Admin", color: "warning" },
+  [APPROVER]: { label: "Duyệt", color: "info" },
+};
 
 const HeaderComponent = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth.user);
+  const roles = useAppSelector((state) => state.auth.roles);
+
+  const primaryRole = [SUPERADMIN, ADMIN, APPROVER].find((r) => roles.includes(r));
+  const roleInfo = primaryRole ? ROLE_LABEL[primaryRole] : null;
 
   const [anchor, setAnchor] = useState<null | HTMLElement>(null);
   const [openProfile, setOpenProfile] = useState<boolean>(false);
@@ -39,12 +51,19 @@ const HeaderComponent = () => {
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Typography
-        variant="body2"
-        sx={{ color: "#3c4043", fontSize: 14, display: { xs: "none", sm: "block" } }}
-      >
-        {displayName}
-      </Typography>
+      <Box sx={{ display: { xs: "none", sm: "flex" }, flexDirection: "column", alignItems: "flex-end", lineHeight: 1.2 }}>
+        <Typography variant="body2" sx={{ color: "#3c4043", fontSize: 14, fontWeight: 500 }}>
+          {displayName}
+        </Typography>
+        {roleInfo && (
+          <Chip
+            label={roleInfo.label}
+            color={roleInfo.color}
+            size="small"
+            sx={{ height: 16, fontSize: 10, mt: 0.25, "& .MuiChip-label": { px: 0.75 } }}
+          />
+        )}
+      </Box>
 
       <Tooltip title="Tài khoản">
         <IconButton

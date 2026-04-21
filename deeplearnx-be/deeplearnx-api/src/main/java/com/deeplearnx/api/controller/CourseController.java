@@ -2,8 +2,9 @@ package com.deeplearnx.api.controller;
 
 import com.deeplearnx.application.dto.request.CreateCourseRequest;
 import com.deeplearnx.application.dto.request.UpdateCourseRequest;
-import com.deeplearnx.application.dto.response.CourseImportResult;
+import com.deeplearnx.application.dto.response.CourseImportRowResult;
 import com.deeplearnx.application.dto.response.CourseResponse;
+import com.deeplearnx.application.dto.response.ImportResult;
 import com.deeplearnx.application.service.CourseImportService;
 import com.deeplearnx.application.service.export.CourseExportService;
 import com.deeplearnx.application.service.CourseService;
@@ -11,6 +12,7 @@ import com.deeplearnx.core.response.ApiResponse;
 import com.deeplearnx.core.response.PageResponse;
 import com.deeplearnx.domain.entity.User;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,14 +89,14 @@ public class CourseController {
   }
 
   @PostMapping("/import")
-  public ResponseEntity<ApiResponse<CourseImportResult>> importCourses(
+  public ResponseEntity<ApiResponse<ImportResult<CourseImportRowResult>>> importCourses(
       @RequestParam("file") MultipartFile file,
       @AuthenticationPrincipal User currentUser) {
     return ResponseEntity.ok(ApiResponse.ok(courseImportService.importCourses(file, currentUser)));
   }
 
   @GetMapping("/import/template")
-  public void downloadImportTemplate(HttpServletResponse response) throws Exception {
+  public void downloadImportTemplate(HttpServletResponse response) throws IOException {
     courseImportService.downloadTemplate(response);
   }
 }

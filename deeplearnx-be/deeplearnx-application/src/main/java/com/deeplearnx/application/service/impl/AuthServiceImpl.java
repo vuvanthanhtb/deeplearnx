@@ -5,7 +5,7 @@ import com.deeplearnx.application.dto.request.RefreshTokenRequest;
 import com.deeplearnx.application.dto.request.RegisterRequest;
 import com.deeplearnx.application.dto.response.AuthResponse;
 import com.deeplearnx.application.dto.response.UserResponse;
-import com.deeplearnx.application.mapper.UserMapper;
+//import com.deeplearnx.application.mapper.UserMapper;
 import com.deeplearnx.application.service.AuthService;
 import com.deeplearnx.application.service.RefreshTokenService;
 import com.deeplearnx.core.entity.Role;
@@ -17,18 +17,16 @@ import com.deeplearnx.domain.entity.UserApprove;
 import com.deeplearnx.infrastructure.persistence.UserApproveRepository;
 import com.deeplearnx.infrastructure.persistence.UserRepository;
 import com.deeplearnx.infrastructure.security.JwtService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -43,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
   private final UserApproveRepository userApproveRepository;
   private final PasswordEncoder passwordEncoder;
   private final RefreshTokenService refreshTokenService;
-  private final UserMapper userMapper;
+//  private final UserMapper userMapper;
 
   @Override
   @Transactional
@@ -55,18 +53,9 @@ public class AuthServiceImpl implements AuthService {
     if (userRepository.existsByEmail(request.email())) {
       throw new ConflictException("Email already registered");
     }
-
-    RegisterRequest encodedRequest = new RegisterRequest(
-        request.username(),
-        request.email(),
-        passwordEncoder.encode(request.password()),
-        request.fullName()
-    );
-
     UserApprove approve = new UserApprove();
     approve.setAction(UserApproveAction.REGISTER);
     approve.setStatus(UserApproveStatus.APPROVING);
-//    approve.setPayload(toJson(encodedRequest));
     approve.setUsername(request.username());
     approve.setEmail(request.email());
     approve.setFullName(request.fullName());
@@ -110,7 +99,8 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public UserResponse getProfile(User user) {
-    return userMapper.toResponse(user);
+//    return userMapper.toResponse(user);
+    return null;
   }
 
   private void handleFailedAttempt(String username) {

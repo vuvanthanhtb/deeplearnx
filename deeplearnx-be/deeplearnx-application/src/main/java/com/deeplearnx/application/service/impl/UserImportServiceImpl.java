@@ -1,23 +1,19 @@
 package com.deeplearnx.application.service.impl;
 
 import com.deeplearnx.application.dto.request.CreateUserRequest;
-import com.deeplearnx.application.dto.response.UserImportResult;
+import com.deeplearnx.application.dto.response.ImportResult;
 import com.deeplearnx.application.dto.response.UserImportRowResult;
 import com.deeplearnx.application.service.UserApproveService;
 import com.deeplearnx.application.service.UserImportService;
+import com.deeplearnx.application.tools.ExcelImportHelper;
 import com.deeplearnx.core.entity.Role;
 import com.deeplearnx.core.exception.BadRequestException;
-import com.deeplearnx.core.exception.NotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -51,8 +47,8 @@ public class UserImportServiceImpl implements UserImportService {
   // -------------------------------------------------------------------------
 
   @Override
-  public UserImportResult importUsers(MultipartFile file) {
-    validateFile(file);
+  public ImportResult<UserImportRowResult> importUsers(MultipartFile file) {
+    ExcelImportHelper.validateFile(file);
     log.info("Start importing users from file: {}", file.getOriginalFilename());
 
     List<UserImportRowResult> failures = new ArrayList<>();
@@ -65,16 +61,16 @@ public class UserImportServiceImpl implements UserImportService {
 
       for (int rowIdx = DATA_START_ROW; rowIdx <= lastRow; rowIdx++) {
         Row row = sheet.getRow(rowIdx);
-        if (row == null || isRowEmpty(row)) {
+        if (row == null || ExcelImportHelper.isRowEmpty(row, COL_USERNAME, COL_ROLES)) {
           continue;
         }
 
         total++;
-        String username = getCellValue(row, COL_USERNAME);
-        String email    = getCellValue(row, COL_EMAIL);
-        String password = getCellValue(row, COL_PASSWORD);
-        String fullName = getCellValue(row, COL_FULLNAME);
-        String rolesStr = getCellValue(row, COL_ROLES);
+        String username = ExcelImportHelper.getCellValue(row, COL_USERNAME);
+        String email    = ExcelImportHelper.getCellValue(row, COL_EMAIL);
+        String password = ExcelImportHelper.getCellValue(row, COL_PASSWORD);
+        String fullName = ExcelImportHelper.getCellValue(row, COL_FULLNAME);
+        String rolesStr = ExcelImportHelper.getCellValue(row, COL_ROLES);
 
         String validationError = validate(rowIdx + 1, username, email, password);
         if (validationError != null) {
@@ -101,7 +97,7 @@ public class UserImportServiceImpl implements UserImportService {
     }
 
     log.info("Import done: total={}, success={}, failed={}", total, success, failures.size());
-    return new UserImportResult(total, success, failures.size(), failures);
+    return new ImportResult<>(total, success, failures.size(), failures);
   }
 
   // -------------------------------------------------------------------------
@@ -110,33 +106,12 @@ public class UserImportServiceImpl implements UserImportService {
 
   @Override
   public void downloadTemplate(HttpServletResponse response) throws IOException {
-    File templateFile = new File(userImportTemplatePath);
-    if (!templateFile.exists()) {
-      throw new NotFoundException("Import template not found");
-    }
-    response.setContentType(
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    response.setHeader("Content-Disposition",
-        "attachment; filename=\"user_import_template.xlsx\"");
-    response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
-    try (FileInputStream fis = new FileInputStream(templateFile)) {
-      fis.transferTo(response.getOutputStream());
-    }
+    ExcelImportHelper.streamTemplate(response, userImportTemplatePath, "user_import_template.xlsx");
   }
 
   // -------------------------------------------------------------------------
   // Helpers
   // -------------------------------------------------------------------------
-
-  private void validateFile(MultipartFile file) {
-    if (file == null || file.isEmpty()) {
-      throw new BadRequestException("File không được để trống");
-    }
-    String filename = file.getOriginalFilename() != null ? file.getOriginalFilename() : "";
-    if (!filename.toLowerCase().endsWith(".xlsx")) {
-      throw new BadRequestException("Chỉ hỗ trợ file .xlsx");
-    }
-  }
 
   private String validate(int rowNum, String username, String email, String password) {
     if (!StringUtils.hasText(username)) {
@@ -167,34 +142,4 @@ public class UserImportServiceImpl implements UserImportService {
     return roles.isEmpty() ? List.of(Role.USER) : roles;
   }
 
-  private String getCellValue(Row row, int col) {
-    Cell cell = row.getCell(col);
-    if (cell == null) {
-      return "";
-    }
-    return switch (cell.getCellType()) {
-      case STRING  -> cell.getStringCellValue().trim();
-      case NUMERIC -> {
-        double v = cell.getNumericCellValue();
-        yield v == Math.floor(v) ? String.valueOf((long) v) : String.valueOf(v);
-      }
-      case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
-      case FORMULA -> {
-        try { yield cell.getStringCellValue().trim(); }
-        catch (Exception e) { yield String.valueOf(cell.getNumericCellValue()); }
-      }
-      default -> "";
-    };
-  }
-
-  private boolean isRowEmpty(Row row) {
-    for (int c = COL_USERNAME; c <= COL_ROLES; c++) {
-      Cell cell = row.getCell(c);
-      if (cell != null && cell.getCellType() != CellType.BLANK
-          && StringUtils.hasText(getCellValue(row, c))) {
-        return false;
-      }
-    }
-    return true;
-  }
 }

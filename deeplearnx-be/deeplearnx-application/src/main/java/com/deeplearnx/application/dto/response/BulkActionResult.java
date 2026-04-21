@@ -10,7 +10,7 @@ public record BulkActionResult(
 ) {
 
   public record BulkActionFailure(
-      Long id,
+      String id,
       String reason
   ) {
 

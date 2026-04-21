@@ -8,7 +8,10 @@ import com.deeplearnx.core.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +20,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<ApiResponse<Void>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "Invalid id format"));
+  }
 
   @ExceptionHandler({BadRequestException.class, IllegalArgumentException.class})
   public ResponseEntity<ApiResponse<Void>> handleBadRequest(RuntimeException ex) {
@@ -39,7 +48,21 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
   public ResponseEntity<ApiResponse<Void>> handleBadCredentials(RuntimeException ex) {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-        .body(ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), "Invalid username or password"));
+        .body(ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), "Tên đăng nhập hoặc mật khẩu không đúng"));
+  }
+
+  @ExceptionHandler(LockedException.class)
+  public ResponseEntity<ApiResponse<Void>> handleLocked(LockedException ex) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body(ApiResponse.error(HttpStatus.UNAUTHORIZED.value(),
+            "Tài khoản đã bị khóa. Vui lòng liên hệ quản trị viên."));
+  }
+
+  @ExceptionHandler(DisabledException.class)
+  public ResponseEntity<ApiResponse<Void>> handleDisabled(DisabledException ex) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body(ApiResponse.error(HttpStatus.UNAUTHORIZED.value(),
+            "Tài khoản chưa được kích hoạt. Vui lòng liên hệ quản trị viên."));
   }
 
   @ExceptionHandler({AuthorizationDeniedException.class, ForbiddenException.class})

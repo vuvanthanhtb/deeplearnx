@@ -5,6 +5,7 @@ import { toastError, toastSuccess } from "@/libs/custom-toast";
 
 import type { LessonRequest, LessonResponse } from "./lessons.type";
 import { lessonsService } from "./lessons.service";
+import { getApiErrorMessage } from "@/libs/interceptor/helpers";
 
 interface LessonsState {
   lessons: LessonResponse[];
@@ -24,7 +25,7 @@ export const getLessonsByCourseSlug = createAsyncThunk(
         await lessonsService.getLessonsByCourseSlug(courseSlug);
       return Array.isArray(response.data) ? response.data : [];
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return [];
     }
   },
@@ -39,7 +40,7 @@ export const createLesson = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.LESSON_CREATE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("CREATE_FAILED");
     }
   },
@@ -54,7 +55,7 @@ export const updateLesson = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.LESSON_UPDATE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("UPDATE_FAILED");
     }
   },
@@ -69,7 +70,7 @@ export const deleteLesson = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.LESSON_DELETE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("DELETE_FAILED");
     }
   },
@@ -89,7 +90,7 @@ export const importLessons = createAsyncThunk(
       }
       return result;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "Nhập file thất bại");
+      toastError(getApiErrorMessage(error, "Nhập file thất bại"));
       return thunkAPI.rejectWithValue("IMPORT_FAILED");
     }
   },
@@ -102,7 +103,7 @@ export const downloadLessonImportTemplate = createAsyncThunk(
       await lessonsService.downloadImportTemplate();
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "Tải template thất bại");
+      toastError(getApiErrorMessage(error, "Tải template thất bại"));
       return thunkAPI.rejectWithValue("TEMPLATE_FAILED");
     }
   },

@@ -28,7 +28,7 @@ public interface UserApproveService {
 
   UserApproveResponse reject(Long id);
 
-  BulkActionResult bulkApprove(List<Long> ids);
+  BulkActionResult bulkApprove(List<String> ids);
 
-  BulkActionResult bulkReject(List<Long> ids);
+  BulkActionResult bulkReject(List<String> ids);
 }

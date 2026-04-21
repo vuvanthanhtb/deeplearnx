@@ -2,12 +2,14 @@ package com.deeplearnx.api.controller;
 
 import com.deeplearnx.application.dto.request.CreateLessonRequest;
 import com.deeplearnx.application.dto.request.UpdateLessonRequest;
-import com.deeplearnx.application.dto.response.LessonImportResult;
+import com.deeplearnx.application.dto.response.ImportResult;
+import com.deeplearnx.application.dto.response.LessonImportRowResult;
 import com.deeplearnx.application.dto.response.LessonResponse;
 import com.deeplearnx.application.service.LessonImportService;
 import com.deeplearnx.application.service.LessonService;
 import com.deeplearnx.core.response.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,13 +64,13 @@ public class LessonController {
   }
 
   @PostMapping("/api/lessons/import")
-  public ResponseEntity<ApiResponse<LessonImportResult>> importLessons(
+  public ResponseEntity<ApiResponse<ImportResult<LessonImportRowResult>>> importLessons(
       @RequestParam("file") MultipartFile file) {
     return ResponseEntity.ok(ApiResponse.ok(lessonImportService.importLessons(file)));
   }
 
   @GetMapping("/api/lessons/import/template")
-  public void downloadImportTemplate(HttpServletResponse response) throws Exception {
+  public void downloadImportTemplate(HttpServletResponse response) throws IOException {
     lessonImportService.downloadTemplate(response);
   }
 }

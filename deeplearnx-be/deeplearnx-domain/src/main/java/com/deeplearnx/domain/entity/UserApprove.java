@@ -42,13 +42,9 @@ public class UserApprove extends BaseEntity {
   @Column(nullable = false)
   private UserApproveStatus status;
 
-  // JSON payload for CREATE/REGISTER/UPDATE actions
-  @Column(columnDefinition = "TEXT")
-  private String payload;
-
-  // Snapshot of user info at the time of request
   private String username;
   private String email;
+  private String password;
   private String fullName;
 
   @Convert(converter = com.deeplearnx.core.converter.RoleListConverter.class)

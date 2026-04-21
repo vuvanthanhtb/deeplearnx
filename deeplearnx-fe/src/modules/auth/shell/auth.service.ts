@@ -51,7 +51,7 @@ class AuthRepository implements IAuthRepository {
     return http.call<RefreshTokenResponse>({
       url: AUTH_ENDPOINT.REFRESH,
       method: "POST",
-      data: { refresh_token: refreshToken },
+      data: { refreshToken },
     });
   }
 

@@ -15,7 +15,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: ${SPRING_JPA_DDL_AUTO}
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -38,6 +38,9 @@ superadmin:
   email: ${SUPERADMIN_EMAIL}
   password: ${SUPERADMIN_PASSWORD}
   fullName: ${SUPERADMIN_FULLNAME}
+
+id:
+
 
 export:
   template:

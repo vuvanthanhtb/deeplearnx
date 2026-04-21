@@ -1,23 +1,19 @@
 package com.deeplearnx.application.service.impl;
 
 import com.deeplearnx.application.dto.request.CreateCourseRequest;
-import com.deeplearnx.application.dto.response.CourseImportResult;
 import com.deeplearnx.application.dto.response.CourseImportRowResult;
+import com.deeplearnx.application.dto.response.ImportResult;
 import com.deeplearnx.application.service.CourseImportService;
 import com.deeplearnx.application.service.CourseService;
+import com.deeplearnx.application.tools.ExcelImportHelper;
 import com.deeplearnx.core.exception.BadRequestException;
-import com.deeplearnx.core.exception.NotFoundException;
 import com.deeplearnx.domain.entity.User;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -44,8 +40,8 @@ public class CourseImportServiceImpl implements CourseImportService {
   private String courseImportTemplatePath;
 
   @Override
-  public CourseImportResult importCourses(MultipartFile file, User currentUser) {
-    validateFile(file);
+  public ImportResult<CourseImportRowResult> importCourses(MultipartFile file, User currentUser) {
+    ExcelImportHelper.validateFile(file);
     log.info("Start importing courses from file: {}", file.getOriginalFilename());
 
     List<CourseImportRowResult> failures = new ArrayList<>();
@@ -58,13 +54,13 @@ public class CourseImportServiceImpl implements CourseImportService {
 
       for (int rowIdx = DATA_START_ROW; rowIdx <= lastRow; rowIdx++) {
         Row row = sheet.getRow(rowIdx);
-        if (row == null || isRowEmpty(row)) {
+        if (row == null || ExcelImportHelper.isRowEmpty(row, COL_NAME, COL_DESCRIPTION)) {
           continue;
         }
 
         total++;
-        String name        = getCellValue(row, COL_NAME);
-        String description = getCellValue(row, COL_DESCRIPTION);
+        String name        = ExcelImportHelper.getCellValue(row, COL_NAME);
+        String description = ExcelImportHelper.getCellValue(row, COL_DESCRIPTION);
 
         if (!StringUtils.hasText(name)) {
           failures.add(new CourseImportRowResult(rowIdx + 1, name, "Tên khóa học không được để trống"));
@@ -88,61 +84,11 @@ public class CourseImportServiceImpl implements CourseImportService {
     }
 
     log.info("Course import done: total={}, success={}, failed={}", total, success, failures.size());
-    return new CourseImportResult(total, success, failures.size(), failures);
+    return new ImportResult<>(total, success, failures.size(), failures);
   }
 
   @Override
   public void downloadTemplate(HttpServletResponse response) throws IOException {
-    File templateFile = new File(courseImportTemplatePath);
-    if (!templateFile.exists()) {
-      throw new NotFoundException("Import template not found");
-    }
-    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    response.setHeader("Content-Disposition", "attachment; filename=\"course_import_template.xlsx\"");
-    response.setHeader("Access-Control-Expose-Headers", "Content-Disposition");
-    try (FileInputStream fis = new FileInputStream(templateFile)) {
-      fis.transferTo(response.getOutputStream());
-    }
-  }
-
-  private void validateFile(MultipartFile file) {
-    if (file == null || file.isEmpty()) {
-      throw new BadRequestException("File không được để trống");
-    }
-    String filename = file.getOriginalFilename() != null ? file.getOriginalFilename() : "";
-    if (!filename.toLowerCase().endsWith(".xlsx")) {
-      throw new BadRequestException("Chỉ hỗ trợ file .xlsx");
-    }
-  }
-
-  private String getCellValue(Row row, int col) {
-    Cell cell = row.getCell(col);
-    if (cell == null) {
-      return "";
-    }
-    return switch (cell.getCellType()) {
-      case STRING  -> cell.getStringCellValue().trim();
-      case NUMERIC -> {
-        double v = cell.getNumericCellValue();
-        yield v == Math.floor(v) ? String.valueOf((long) v) : String.valueOf(v);
-      }
-      case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
-      case FORMULA -> {
-        try { yield cell.getStringCellValue().trim(); }
-        catch (Exception e) { yield String.valueOf(cell.getNumericCellValue()); }
-      }
-      default -> "";
-    };
-  }
-
-  private boolean isRowEmpty(Row row) {
-    for (int c = COL_NAME; c <= COL_DESCRIPTION; c++) {
-      Cell cell = row.getCell(c);
-      if (cell != null && cell.getCellType() != CellType.BLANK
-          && StringUtils.hasText(getCellValue(row, c))) {
-        return false;
-      }
-    }
-    return true;
+    ExcelImportHelper.streamTemplate(response, courseImportTemplatePath, "course_import_template.xlsx");
   }
 }

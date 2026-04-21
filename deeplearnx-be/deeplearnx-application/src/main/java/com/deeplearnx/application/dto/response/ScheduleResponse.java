@@ -4,7 +4,7 @@ import com.deeplearnx.domain.entity.ScheduleStatus;
 import java.time.LocalDateTime;
 
 public record ScheduleResponse(
-    Long id,
+    String id,
     String title,
     String content,
     LocalDateTime scheduledAt,

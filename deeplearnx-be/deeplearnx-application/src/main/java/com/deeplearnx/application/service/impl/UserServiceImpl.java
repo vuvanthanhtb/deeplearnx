@@ -1,7 +1,7 @@
 package com.deeplearnx.application.service.impl;
 
 import com.deeplearnx.application.dto.response.UserResponse;
-import com.deeplearnx.application.mapper.UserMapper;
+//import com.deeplearnx.application.mapper.UserMapper;
 import com.deeplearnx.application.service.UserService;
 import com.deeplearnx.core.exception.NotFoundException;
 import com.deeplearnx.core.response.PageResponse;
@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
   private final UserQueryRepository userQueryRepository;
-  private final UserMapper userMapper;
+//  private final UserMapper userMapper;
 
   @Override
   public User findByUsername(String username) {
@@ -31,12 +31,27 @@ public class UserServiceImpl implements UserService {
     return PageResponse.of(
         userQueryRepository.search(username, email, fullName, role, status, fromDate, toDate,
             PageRequest.of(page, size)),
-        userMapper::toResponse);
+        (user) -> {
+          UserResponse userResponse = new UserResponse();
+          userResponse.setId( user.getId() );
+          userResponse.setUsername( user.getUsername() );
+          userResponse.setEmail( user.getEmail() );
+          userResponse.setFullName( user.getFullName() );
+          userResponse.setCreatedBy( user.getCreatedBy() );
+          userResponse.setUpdatedBy( user.getUpdatedBy() );
+
+          userResponse.setRoles( user.getRoles() != null ? user.getRoles().stream().map(Enum::name).collect(java.util.stream.Collectors.toList()) : java.util.List.of() );
+          userResponse.setStatus( user.getStatus() != null ? user.getStatus().name() : null );
+          userResponse.setCreatedAt( user.getCreatedAt() != null ? user.getCreatedAt().toString() : null );
+          userResponse.setUpdatedAt( user.getUpdatedAt() != null ? user.getUpdatedAt().toString() : null );
+          return userResponse;
+        });
   }
 
   @Override
   public UserResponse findById(Long id) {
-    return userMapper.toResponse(
-        userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found")));
+//    return userMapper.toResponse(
+//        userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found")));
+    return null;
   }
 }

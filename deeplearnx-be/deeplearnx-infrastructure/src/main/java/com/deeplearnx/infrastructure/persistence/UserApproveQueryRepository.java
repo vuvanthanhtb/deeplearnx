@@ -31,7 +31,6 @@ public class UserApproveQueryRepository {
              ua.user_id,
              ua.action,
              ua.status,
-             ua.payload,
              COALESCE(ua.username, '')                    AS username,
              COALESCE(ua.email, '')                       AS email,
              COALESCE(ua.full_name, '')                   AS full_name,
@@ -58,7 +57,6 @@ public class UserApproveQueryRepository {
     detail.setUserId(rs.getObject("user_id") != null ? rs.getLong("user_id") : null);
     detail.setAction(UserApproveAction.valueOf(rs.getString("action")));
     detail.setStatus(UserApproveStatus.valueOf(rs.getString("status")));
-    detail.setPayload(rs.getString("payload"));
     detail.setUsername(rs.getString("username"));
     detail.setEmail(rs.getString("email"));
     detail.setFullName(rs.getString("full_name"));

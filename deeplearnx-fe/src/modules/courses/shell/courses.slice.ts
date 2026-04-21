@@ -10,6 +10,7 @@ import { formatDate } from "@/libs/utils/date.utils";
 
 import type { CourseQuery, CourseRequest, CourseResponse } from "./courses.type";
 import { coursesService } from "./courses.service";
+import { getApiErrorMessage } from "@/libs/interceptor/helpers";
 import { PAGE_CURRENT, PAGE_SIZE } from "@/libs/constants/table.constant";
 
 export type CourseRow = {
@@ -75,7 +76,7 @@ export const getCourses = createAsyncThunk(
       const { data: response } = await coursesService.getCourses(params);
       return { data: response.data, params };
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("GET_FAILED");
     }
   },
@@ -90,7 +91,7 @@ export const createCourse = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.COURSE_CREATE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("CREATE_FAILED");
     }
   },
@@ -105,7 +106,7 @@ export const updateCourse = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.COURSE_UPDATE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("UPDATE_FAILED");
     }
   },
@@ -120,7 +121,7 @@ export const deleteCourse = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.COURSE_DELETE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("DELETE_FAILED");
     }
   },
@@ -133,7 +134,7 @@ export const exportCourses = createAsyncThunk(
       await coursesService.exportCourses(params);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "Xuất file thất bại");
+      toastError(getApiErrorMessage(error, "Xuất file thất bại"));
       return thunkAPI.rejectWithValue("EXPORT_FAILED");
     }
   },
@@ -153,7 +154,7 @@ export const importCourses = createAsyncThunk(
       }
       return result;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "Nhập file thất bại");
+      toastError(getApiErrorMessage(error, "Nhập file thất bại"));
       return thunkAPI.rejectWithValue("IMPORT_FAILED");
     }
   },
@@ -166,7 +167,7 @@ export const downloadCourseImportTemplate = createAsyncThunk(
       await coursesService.downloadImportTemplate();
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "Tải template thất bại");
+      toastError(getApiErrorMessage(error, "Tải template thất bại"));
       return thunkAPI.rejectWithValue("TEMPLATE_FAILED");
     }
   },

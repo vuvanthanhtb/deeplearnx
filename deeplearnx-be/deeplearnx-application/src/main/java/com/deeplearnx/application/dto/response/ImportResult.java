@@ -2,11 +2,11 @@ package com.deeplearnx.application.dto.response;
 
 import java.util.List;
 
-public record UserImportResult(
+public record ImportResult<T>(
     int total,
     int success,
     int failed,
-    List<UserImportRowResult> failures
+    List<T> failures
 ) {
 
 }

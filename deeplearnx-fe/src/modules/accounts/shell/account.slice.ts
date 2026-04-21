@@ -14,6 +14,7 @@ import type {
 } from "./account.type";
 import { parseStatusUser } from "@/libs/utils/status.utils";
 import { getRoleName } from "@/libs/utils/role.utils";
+import { getApiErrorMessage } from "@/libs/interceptor/helpers";
 
 export type AccountRow = {
   id: string;
@@ -109,7 +110,7 @@ export const getAccounts = createAsyncThunk(
         },
       };
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("GET_FAILED");
     }
   },
@@ -123,7 +124,7 @@ export const createAccount = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.ACCOUNT_CREATE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("CREATE_FAILED");
     }
   },
@@ -137,7 +138,7 @@ export const updateAccount = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.ACCOUNT_UPDATE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("UPDATE_FAILED");
     }
   },
@@ -151,7 +152,7 @@ export const deleteAccount = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.ACCOUNT_DELETE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("DELETE_FAILED");
     }
   },
@@ -165,7 +166,7 @@ export const lockAccount = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.ACCOUNT_LOCK);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("LOCK_FAILED");
     }
   },
@@ -179,7 +180,7 @@ export const unlockAccount = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.ACCOUNT_UNLOCK);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("UNLOCK_FAILED");
     }
   },
@@ -201,7 +202,7 @@ export const getPendingAccounts = createAsyncThunk(
         },
       };
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("GET_FAILED");
     }
   },
@@ -215,7 +216,7 @@ export const approveAccount = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.ACCOUNT_APPROVE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("APPROVE_FAILED");
     }
   },
@@ -229,7 +230,7 @@ export const rejectAccount = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.ACCOUNT_REJECT);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("REJECT_FAILED");
     }
   },
@@ -243,7 +244,7 @@ export const exportAccounts = createAsyncThunk(
       return true;
     } catch (error: unknown) {
       toastError(
-        error instanceof Error ? error.message : "Xuất báo cáo thất bại.",
+        getApiErrorMessage(error, "Xuất báo cáo thất bại."),
       );
       return thunkAPI.rejectWithValue("EXPORT_FAILED");
     }
@@ -258,7 +259,7 @@ export const bulkApproveAccounts = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.ACCOUNT_BULK_APPROVE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("BULK_APPROVE_FAILED");
     }
   },
@@ -272,7 +273,7 @@ export const bulkRejectAccounts = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.ACCOUNT_BULK_REJECT);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("BULK_REJECT_FAILED");
     }
   },
@@ -292,7 +293,7 @@ export const importAccounts = createAsyncThunk(
       }
       return result;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "Nhập file thất bại");
+      toastError(getApiErrorMessage(error, "Nhập file thất bại"));
       return thunkAPI.rejectWithValue("IMPORT_FAILED");
     }
   },
@@ -305,7 +306,7 @@ export const downloadAccountImportTemplate = createAsyncThunk(
       await accountService.downloadImportTemplate();
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "Tải template thất bại");
+      toastError(getApiErrorMessage(error, "Tải template thất bại"));
       return thunkAPI.rejectWithValue("TEMPLATE_FAILED");
     }
   },

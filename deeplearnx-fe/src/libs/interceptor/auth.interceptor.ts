@@ -27,7 +27,6 @@ const processQueue = (error: unknown, token: string | null = null) => {
 };
 
 export const setupAuthInterceptor = () => {
-  // ── Request: đính kèm access token ──────────────────────
   axiosClient.interceptors.request.use(
     (config) => {
       const token = TokenService.getAccessToken();
@@ -39,14 +38,16 @@ export const setupAuthInterceptor = () => {
     (error) => Promise.reject(error),
   );
 
-  // ── Response: xử lý 401 → refresh token ─────────────────
   axiosClient.interceptors.response.use(
     (response) => response,
     async (error) => {
       const originalRequest = error.config as RetryableRequest;
-
-      // Không phải 401 hoặc đã retry rồi → reject luôn
-      if (error.response?.status !== 401 || originalRequest._retry) {
+      const isAuthEndpoint = originalRequest.url?.includes("/api/auth/");
+      if (
+        error.response?.status !== 401 ||
+        originalRequest._retry ||
+        isAuthEndpoint
+      ) {
         return Promise.reject(error);
       }
 
@@ -56,7 +57,6 @@ export const setupAuthInterceptor = () => {
         return Promise.reject(error);
       }
 
-      // Nếu đang refresh → đưa request vào hàng đợi
       if (isRefreshing) {
         return new Promise<string>((resolve, reject) => {
           failedQueue.push({ resolve, reject });

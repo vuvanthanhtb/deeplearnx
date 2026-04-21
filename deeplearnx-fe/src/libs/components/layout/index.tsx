@@ -20,6 +20,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { SUPERADMIN } from "@/libs/constants/roles.constant";
 import { PATHS_CONFIG } from "@/shell/route/path.config";
 import HeaderComponent from "./header.component";
+import ClockComponent from "./clock.component";
 
 const DRAWER_WIDTH = 220;
 
@@ -133,7 +134,10 @@ const MainLayout = () => {
             </Box>
           </Box>
 
-          <HeaderComponent />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <ClockComponent />
+            <HeaderComponent />
+          </Box>
         </Toolbar>
       </AppBar>
 

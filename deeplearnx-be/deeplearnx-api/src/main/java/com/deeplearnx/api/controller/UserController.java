@@ -5,6 +5,7 @@ import com.deeplearnx.application.service.UserService;
 import com.deeplearnx.application.service.export.UserExportService;
 import com.deeplearnx.core.response.ApiResponse;
 import com.deeplearnx.core.response.PageResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,9 +33,9 @@ public class UserController {
       @RequestParam(required = false) String toDate,
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size) {
-    return ResponseEntity.ok(ApiResponse.ok(
-        userService.findAll(username, email, fullName, role, status, fromDate, toDate,
-            Math.max(page - 1, 0), Math.max(size, 1))));
+    var result = userService.findAll(username, email, fullName, role, status, fromDate, toDate,
+        Math.max(page - 1, 0), Math.max(size, 1));
+    return ResponseEntity.ok(ApiResponse.ok(result));
   }
 
   @GetMapping("/{id}")
@@ -49,7 +50,7 @@ public class UserController {
       @RequestParam(required = false) String fullName,
       @RequestParam(required = false) String fromDate,
       @RequestParam(required = false) String toDate,
-      jakarta.servlet.http.HttpServletResponse response) throws Exception {
+      HttpServletResponse response) throws Exception {
     userExportService.export(username, email, fullName, fromDate, toDate, response);
   }
 }

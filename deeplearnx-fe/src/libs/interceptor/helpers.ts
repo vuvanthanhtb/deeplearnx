@@ -1,3 +1,5 @@
+import { ERROR_MESSAGE_MAP } from "../constants/error-code.constant";
+
 export const readBlobAsText = (blob: Blob): Promise<string> =>
   new Promise((resolve) => {
     const reader = new FileReader();
@@ -14,26 +16,17 @@ type ApiErrorResponse = {
   };
 };
 
-export const handleError = (error: unknown) => {
+const resolveMessage = (msg: string): string => ERROR_MESSAGE_MAP[msg] ?? msg;
+
+export const getApiErrorMessage = (error: unknown, fallback = ""): string => {
   if (typeof error === "object" && error !== null && "response" in error) {
     const err = error as ApiErrorResponse;
-    if (
-      typeof err.response === "object" &&
-      err.response !== null &&
-      "data" in err.response &&
-      typeof err.response.data === "object" &&
-      err.response.data !== null &&
-      "message" in err.response.data
-    ) {
-      return err.response.data;
-    }
+    const msg = err.response?.data?.message;
+    if (typeof msg === "string" && msg.trim()) return resolveMessage(msg);
   }
-
-  if (error instanceof Error) {
-    return error;
-  }
-
-  return error;
+  if (error instanceof Error && error.message)
+    return resolveMessage(error.message);
+  return fallback;
 };
 
 export const removeEmpty = (obj: unknown): unknown => {

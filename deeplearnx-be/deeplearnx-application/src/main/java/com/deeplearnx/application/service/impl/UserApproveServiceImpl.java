@@ -1,7 +1,6 @@
 package com.deeplearnx.application.service.impl;
 
 import com.deeplearnx.application.dto.request.CreateUserRequest;
-import com.deeplearnx.application.dto.request.RegisterRequest;
 import com.deeplearnx.application.dto.request.UpdateUserRequest;
 import com.deeplearnx.application.dto.response.BulkActionResult;
 import com.deeplearnx.application.dto.response.BulkActionResult.BulkActionFailure;
@@ -25,8 +24,6 @@ import com.deeplearnx.infrastructure.persistence.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -74,16 +71,10 @@ public class UserApproveServiceImpl implements UserApproveService {
     if (userRepository.existsByEmail(request.email())) {
       throw new ConflictException("Email already exists");
     }
-    CreateUserRequest encodedRequest = new CreateUserRequest(
-        request.username(),
-        request.email(),
-        passwordEncoder.encode(request.password()),
-        request.fullName(),
-        request.roles()
-    );
-    UserApprove approve = buildApprove(null, UserApproveAction.CREATE, null);
+    UserApprove approve = buildApprove(null, UserApproveAction.CREATE);
     approve.setUsername(request.username());
     approve.setEmail(request.email());
+    approve.setPassword(passwordEncoder.encode(request.password()));
     approve.setFullName(request.fullName());
     approve.setRoles(request.roles() != null ? request.roles() : List.of());
     return saveAndFetch(approve);
@@ -95,9 +86,15 @@ public class UserApproveServiceImpl implements UserApproveService {
     log.info("Update user approve request for userId={}", id);
     User user = getUser(id);
     checkAdminNotPrivilegedTarget(user);
-    UpdateUserRequest sanitized = isPrivilegedCurrentUser() ? request
-        : new UpdateUserRequest(request.fullName(), request.email(), null);
-    UserApprove approve = buildApproveForUser(id, user, UserApproveAction.UPDATE, null);
+    UserApprove approve = buildApprove(id, UserApproveAction.UPDATE);
+    approve.setUsername(user.getUsername());
+    approve.setEmail(StringUtils.hasText(request.email()) ? request.email() : user.getEmail());
+    approve.setFullName(StringUtils.hasText(request.fullName()) ? request.fullName() : user.getFullName());
+    if (isPrivilegedCurrentUser() && request.roles() != null) {
+      approve.setRoles(request.roles());
+    } else {
+      approve.setRoles(user.getRoles());
+    }
     return saveAndFetch(approve);
   }
 
@@ -108,7 +105,7 @@ public class UserApproveServiceImpl implements UserApproveService {
     checkSuperAdminNotSelf(id);
     User user = getUser(id);
     checkAdminNotPrivilegedTarget(user);
-    return saveAndFetch(buildApproveForUser(id, user, UserApproveAction.DELETE, null));
+    return saveAndFetch(buildApproveForUser(id, user, UserApproveAction.DELETE));
   }
 
   @Override
@@ -118,7 +115,7 @@ public class UserApproveServiceImpl implements UserApproveService {
     checkSuperAdminNotSelf(id);
     User user = getUser(id);
     checkAdminNotPrivilegedTarget(user);
-    return saveAndFetch(buildApproveForUser(id, user, UserApproveAction.LOCK, null));
+    return saveAndFetch(buildApproveForUser(id, user, UserApproveAction.LOCK));
   }
 
   @Override
@@ -128,7 +125,7 @@ public class UserApproveServiceImpl implements UserApproveService {
     checkSuperAdminNotSelf(id);
     User user = getUser(id);
     checkAdminNotPrivilegedTarget(user);
-    return saveAndFetch(buildApproveForUser(id, user, UserApproveAction.UNLOCK, null));
+    return saveAndFetch(buildApproveForUser(id, user, UserApproveAction.UNLOCK));
   }
 
   @Override
@@ -168,25 +165,25 @@ public class UserApproveServiceImpl implements UserApproveService {
 
   @Override
   @Transactional
-  public BulkActionResult bulkApprove(List<Long> ids) {
+  public BulkActionResult bulkApprove(List<String> ids) {
     log.info("Bulk approve {} requests", ids.size());
     return executeBulk(ids, this::approve);
   }
 
   @Override
   @Transactional
-  public BulkActionResult bulkReject(List<Long> ids) {
+  public BulkActionResult bulkReject(List<String> ids) {
     log.info("Bulk reject {} requests", ids.size());
     return executeBulk(ids, this::reject);
   }
 
-  private BulkActionResult executeBulk(List<Long> ids,
+  private BulkActionResult executeBulk(List<String> ids,
       java.util.function.Function<Long, UserApproveResponse> action) {
     List<BulkActionFailure> failures = new ArrayList<>();
     int success = 0;
-    for (Long id : ids) {
+    for (String id : ids) {
       try {
-        action.apply(id);
+        action.apply(Long.parseLong(id));
         success++;
       } catch (Exception e) {
         log.warn("Bulk action failed for id={}: {}", id, e.getMessage());
@@ -198,24 +195,13 @@ public class UserApproveServiceImpl implements UserApproveService {
   }
 
   private void applyRegister(UserApprove approve) {
-    try {
-//      RegisterRequest request = objectMapper.readValue(approve.getPayload(), RegisterRequest.class);
-//      saveNewUser(request.username(), request.email(), request.password(), request.fullName(),
-//          List.of(Role.USER));
-    } catch (Exception e) {
-      throw new BadRequestException("Failed to apply register: " + e.getMessage());
-    }
+    saveNewUser(approve.getUsername(), approve.getEmail(), approve.getPassword(),
+        approve.getFullName(), List.of(Role.USER));
   }
 
   private void applyCreate(UserApprove approve) {
-    try {
-//      CreateUserRequest request = objectMapper.readValue(approve.getPayload(),
-//          CreateUserRequest.class);
-//      saveNewUser(request.username(), request.email(), request.password(), request.fullName(),
-//          request.roles() != null ? request.roles() : List.of());
-    } catch (Exception e) {
-      throw new BadRequestException("Failed to apply create: " + e.getMessage());
-    }
+    saveNewUser(approve.getUsername(), approve.getEmail(), approve.getPassword(),
+        approve.getFullName(), approve.getRoles() != null ? approve.getRoles() : List.of());
   }
 
   private void saveNewUser(String username, String email, String password, String fullName,
@@ -232,22 +218,16 @@ public class UserApproveServiceImpl implements UserApproveService {
 
   private void applyUpdate(UserApprove approve) {
     User user = getUser(approve.getUserId());
-    try {
-//      UpdateUserRequest request = objectMapper.readValue(approve.getPayload(),
-//          UpdateUserRequest.class);
-//      if (StringUtils.hasText(request.email())) {
-//        user.setEmail(request.email());
-//      }
-//      if (StringUtils.hasText(request.fullName())) {
-//        user.setFullName(request.fullName());
-//      }
-//      if (request.roles() != null) {
-//        user.setRoles(request.roles());
-//      }
-      userRepository.save(user);
-    } catch (Exception e) {
-      throw new BadRequestException("Failed to apply update: " + e.getMessage());
+    if (StringUtils.hasText(approve.getEmail())) {
+      user.setEmail(approve.getEmail());
     }
+    if (StringUtils.hasText(approve.getFullName())) {
+      user.setFullName(approve.getFullName());
+    }
+    if (approve.getRoles() != null) {
+      user.setRoles(approve.getRoles());
+    }
+    userRepository.save(user);
   }
 
   private void applyDelete(UserApprove approve) {
@@ -314,18 +294,16 @@ public class UserApproveServiceImpl implements UserApproveService {
     }
   }
 
-  private UserApprove buildApprove(Long userId, UserApproveAction action, String payload) {
+  private UserApprove buildApprove(Long userId, UserApproveAction action) {
     UserApprove approve = new UserApprove();
     approve.setUserId(userId);
     approve.setAction(action);
     approve.setStatus(UserApproveStatus.APPROVING);
-    approve.setPayload(payload);
     return approve;
   }
 
-  private UserApprove buildApproveForUser(Long userId, User user, UserApproveAction action,
-      String payload) {
-    UserApprove approve = buildApprove(userId, action, payload);
+  private UserApprove buildApproveForUser(Long userId, User user, UserApproveAction action) {
+    UserApprove approve = buildApprove(userId, action);
     approve.setUsername(user.getUsername());
     approve.setEmail(user.getEmail());
     approve.setFullName(user.getFullName());

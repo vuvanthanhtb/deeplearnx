@@ -4,6 +4,7 @@ import { SUCCESS_CODE } from "@/libs/constants/error-code.constant";
 import { toastError, toastSuccess } from "@/libs/custom-toast";
 
 import { TokenService } from "@/libs/interceptor/token.service";
+import { getApiErrorMessage } from "@/libs/interceptor/helpers";
 
 import { authService } from "./auth.service";
 import type { LoginRequest, ProfileUser, RegisterRequest } from "./auth.type";
@@ -36,7 +37,7 @@ export const profileUser = createAsyncThunk(
         },
       };
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("PROFILE_FAILED");
     }
   },
@@ -59,7 +60,7 @@ export const loginUser = createAsyncThunk(
       }
       toastSuccess(SUCCESS_CODE.AUTH_LOGIN);
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("LOGIN_FAILED");
     }
   },
@@ -72,9 +73,10 @@ export const logoutUser = createAsyncThunk(
       await authService.logout();
       thunkAPI.dispatch(logout());
       toastSuccess(SUCCESS_CODE.AUTH_LOGOUT);
+      TokenService.clear();
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("LOGOUT_FAILED");
     }
   },
@@ -88,7 +90,7 @@ export const registerUser = createAsyncThunk(
       toastSuccess(response.message);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("REGISTER_FAILED");
     }
   },

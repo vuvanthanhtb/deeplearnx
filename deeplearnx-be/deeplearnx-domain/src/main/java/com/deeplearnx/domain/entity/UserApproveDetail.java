@@ -10,20 +10,16 @@ import lombok.Data;
 @Data
 public class UserApproveDetail {
 
-  // user_approves fields
   private Long id;
   private Long userId;
   private UserApproveAction action;
   private UserApproveStatus status;
-  private String payload;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
-  private String createdBy;
-  private String updatedBy;
-
-  // joined from users
   private String username;
   private String email;
   private String fullName;
   private List<Role> roles;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
+  private String createdBy;
+  private String updatedBy;
 }

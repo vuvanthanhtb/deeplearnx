@@ -5,6 +5,7 @@ import { toastError, toastSuccess } from "@/libs/custom-toast";
 
 import type { ScheduleRequest, ScheduleResponse } from "./schedule.type";
 import { scheduleService } from "./schedule.service";
+import { getApiErrorMessage } from "@/libs/interceptor/helpers";
 
 interface ScheduleState {
   schedules: ScheduleResponse[];
@@ -23,7 +24,7 @@ export const getSchedules = createAsyncThunk(
       const { data: response } = await scheduleService.getSchedules();
       return Array.isArray(response.data) ? response.data : [];
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return [];
     }
   },
@@ -38,7 +39,7 @@ export const createSchedule = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.SCHEDULE_CREATE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("CREATE_FAILED");
     }
   },
@@ -53,7 +54,7 @@ export const updateSchedule = createAsyncThunk(
       toastSuccess(SUCCESS_CODE.SCHEDULE_UPDATE);
       return true;
     } catch (error: unknown) {
-      toastError(error instanceof Error ? error.message : "");
+      toastError(getApiErrorMessage(error));
       return thunkAPI.rejectWithValue("UPDATE_FAILED");
     }
   },
